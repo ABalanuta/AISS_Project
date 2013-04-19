@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>artur.balanuta@ist.utl.pt</em:id>
+    <em:version>1.0</em:version>
+    <em:type>2</em:type> <!-- type = extension -->
+    <em:unpack>true</em:unpack>
+
+    <em:targetApplication>
+      <Description>
+        <!-- Thunderbird -->
+        <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
+        <em:minVersion>17.0</em:minVersion>
+        <em:maxVersion>21.0</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <em:targetPlatform>Linux_x86-gcc3</em:targetPlatform>
+    <em:targetPlatform>Linux_x86_64-gcc3</em:targetPlatform>
+    <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
+    <em:targetPlatform>Darwin_x86-gcc3</em:targetPlatform>
+    <em:targetPlatform>Darwin_x86_64-gcc3</em:targetPlatform>
+
+    <!-- Front End MetaData -->
+    <em:name>AESecure</em:name>
+    <em:description>AESecure message encryption and authentication</em:description>
+    <em:creator>AESecure Team(Grupo1 AISS)</em:creator>
+    <em:homepageURL>https://fenix.ist.utl.pt/disciplinas/aiac4/2012-2013/2-semestre/</em:homepageURL>
+
+    <!-- Front End Integration Hooks (used by Extension Manager)-->
+    <em:iconURL>chrome://aesecure/skin/app_icon_64x64.png</em:iconURL>
+  </Description>
+</RDF>

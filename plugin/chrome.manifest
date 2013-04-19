@@ -1,0 +1,13 @@
+#Content
+content       aesecure                chrome/content/
+content       aesecure                chrome/content/ contentaccessible=yes
+
+#Skin
+skin          aesecure    classic/1.0 chrome/skin/
+
+#Locale
+#locale        aesecure    en-US       jar:chrome/locale/en-US/
+#locale        aesecure    pt-PT       jar:chrome/locale/pt-PT/
+
+#Overlays
+overlay chrome://messenger/content/messengercompose/messengercompose.xul chrome/content/aesecureMsgComposeOverlay.xul
