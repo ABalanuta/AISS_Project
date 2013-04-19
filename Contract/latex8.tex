@@ -46,9 +46,16 @@ Esta extens\~ao ser\'a desenvolvida com o intuito de intensificar a seguran\c{c}
 
 \noindent \textbf{- Autentica\c{c}\~ao via cart\~ao de cidad\~ao}\\
 \indent Para garantir a autenticidade do cliente, ser\'a utilizado o cart\~ao de cidad\~ao com as respectivas bibliotecas \emph{Java}. A mensagem criada pelo cliente ser\'a alvo de duas fun\c{c}\~oes de resumo (\textbf{\emph{hash}}) sendo estas inclu\'idas na assinatura digital, que \'e gerada conforme as opera\c{c}\~oes suportadas pelo cart\~ao do cliente (tecnologia \emph{SmartCard}), nomeadamente a assinatura usando a chave privada do mesmo. \\
+\indent A utiliza\c{c}\~ao de duas fun\c{c}\~oes de resumo (\emph{SHA256} e \emph{RIPEMD160}) permitir\'a reduzir a probabilidade de encontrar colis\~oes visto que \'e muito improv\'avel encontrar outro texto que satisfa\c{c}a ambas as fun\c{c}\~oes de resumo, sendo que estas baseiam-se em algoritmos criptogr\'aficos diferentes.\\
 
 \noindent \textbf{- Confidencialidade}\\
+\indent Conforme requisitado pelo cliente, ser\'a utilizado um hardware externo (com uma interface baseada em linguagem \emph{C}) que ir\'a permitir a cifra/descifra das mensagens utilizando o algortimo \textbf{AES}. O hardware cont\'em uma chave sim\'etrica (gerada previamente pelo cliente) que ser\'a utilizada (em conjunto com o hardware) para garantir a funcionalidade pretendida.\\
+\indent Ser\'a necess\'aria a implenta\c{c}\~ao de um \emph{binding agent} entre as duas linguagens (\emph{C} e \emph{Java}) de forma a permitir invoca\c{c}\~oes ao hardware.\\
 
+\noindent \textbf{- Procedimento Geral:} \\
+\indent Ap\'os o cliente ter finalizado a sua mensagem, poder\'a escolher qualquer uma das funcionalidades (ou ambas) anteriormente descritas. \\
+\indent \indent \textbf{Envio:} Caso o utilizador escolha ambas as op\c{c}\~oes, a mensagem , em primeiro lugar, ser\'a autenticada com as caracter\'isticas anteriormente em \textbf{Autentica\c{c}\~ao via cart\~ao de cidad\~ao}  e seguidamente iremos cifrar a mesma como descrito no ponto \textbf{Confidencialidade}. Finalmente o conte\'udo gerado \'e convertido em \emph{Base64} para manter a compatibilidade na tecnologia de transporte de email existente actualmente. Para assinalar o uso de qualquer funcionalidade, o conte\'udo cifrado ser\'a encapsulado com uma \emph{flag} auto-descritiva das op\c{c}\~oes utilizadas.\\
+\indent \indent \textbf{Recep\c{c}\~ao:} Ao receber um email e em fun\c{c}\~ao das op\c{c}\~oes utilizadas (mencionadas atrav\'es da \emph{flag}), iremos efectuar (se necess\'ario) a descifra e valida\c{c}\~ao do conte\'udo.
 
 \SubSection{Opcionais - Pacote Premium}
 
@@ -92,6 +99,7 @@ Para a implementa\c{c}\~ao desta aplica\c{c}\~ao foram considerados os seguintes
 
 %------------------------------------------------------------------------ 
 \Section{Conclus\~ao}
+
 
 
 %------------------------------------------------------------------------- 
