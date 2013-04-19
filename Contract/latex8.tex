@@ -1,0 +1,103 @@
+\documentclass[times, 10pt,twocolumn]{article} 
+\usepackage{latex8}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{eurosym}
+
+%\documentstyle[times,art10,twocolumn,latex8]{article}
+
+%------------------------------------------------------------------------- 
+% take the % away on next line to produce the final camera-ready version 
+\pagestyle{empty}
+
+%------------------------------------------------------------------------- 
+\begin{document}
+
+\title{Algoritmos e Implementa\c{c}\~oes de Sistemas de Seguran\c{c}a\\
+Especifica\c{c}\~ao de Contracto: \\
+Extens\~ao PGP para clientes de email com uso de Cart\~ao de Cidad\~ao Portugu\^es 
+\\ Instituto Superior T\'ecnico - Taguspark}
+
+\author{Bernardo Santos\\ 57437, MERC \\  bernardompsantos@ist.utl.pt\\
+\and
+Artur Balanuta\\
+68206, MERC\\
+artur.balanuta@gmail.com\\
+}
+
+\maketitle
+\thispagestyle{empty}
+
+%------------------------------------------------------------------------- 
+\Section{Introdu\c{c}\~ao}
+No \~ambito da cadeira de Algoritmos e Implementa\c{c}\~oes de Sistemas de Seguran\c{c}a \textbf{(AISS)}, foi pedido a cria\c{c}\~ao de uma extens\~ao de autentica\c{c}\~ao e confidencialidade para um cliente de email utilizando o protocolo \textbf{PGP} - \emph{Pretty Good Privacy} e o cart\~ao de cidad\~ao portugu\^es. Neste contracto serão espec\'ificadas um conjunto de funcionalidades requisitadas pelo cliente, fazendo a avalia\c{c}\~ao das mesmas.
+%------------------------------------------------------------------------- 
+\Section{Objectivo}
+
+Esta extens\~ao ser\'a desenvolvida com o intuito de intensificar a seguran\c{c}a na comunica\c{c}\~ao via correio electr\'onico entre utilizadores, recorrendo ao uso do cart\~ao de cidad\~ao e/ou a outros mecanismos criptogr\'aficos (baseados em hardware).
+
+%------------------------------------------------------------------------- 
+\Section{Funcionalidades}
+
+\SubSection{Essenciais - Pacote Standard}
+
+\noindent \textbf{- Plug-in \emph{Mozilla Thunderbird}}\\
+\indent Ser\'a desenvolvido uma extens\~ao para o cliente de email \textbf{\emph{Mozilla Thunderbird}} conforme requisitado pelo cliente. A cria\c{c}\~ao da extens\~ao obriga \'a utiliza\c{c} de v\'arias linguagens de programa\c{c}\~ao tais como \emph{JavaScript} entre outras. No entanto o cerne da mesma ser\'a desenvolvido em \emph{Java}. \\
+
+\noindent \textbf{- Autentica\c{c}\~ao via cart\~ao de cidad\~ao}\\
+\indent Para garantir a autenticidade do cliente, ser\'a utilizado o cart\~ao de cidad\~ao com as respectivas bibliotecas \emph{Java}. A mensagem criada pelo cliente ser\'a alvo de duas fun\c{c}\~oes de resumo (\textbf{\emph{hash}}) sendo estas inclu\'idas na assinatura digital, que \'e gerada conforme as opera\c{c}\~oes suportadas pelo cart\~ao do cliente (tecnologia \emph{SmartCard}), nomeadamente a assinatura usando a chave privada do mesmo. \\
+
+\noindent \textbf{- Confidencialidade}\\
+
+
+\SubSection{Opcionais - Pacote Premium}
+
+Para al\'em das funcionalidades anteriormente descritas, este pacote incluir\'a uma funcionalidade extra a ser descrita de seguida:\\
+
+\noindent \textbf{- Selo temporal optimizado}\\
+\indent Para garantir uma uniformidade temporal, precisamos de recorrer ao uso de uma entidade externa para autentica\c{c}\~ao temporal das mensagens (\textbf{um servidor TSS - \emph{Time Stamp Service}}). \\
+\indent O servi\c{c}o baseia-se na utiliza\c{c}\~ao de chaves assim\'etricas para assinatura do \textbf{resumo - \emph{digest}} gerado em fun\c{c}\~ao do conte\'udo j\'a autenticado pelo utilizador em que a chave p\'ublica do servidor \textbf{TSS} \'e conhecida por todos os interlocutores. Deste modo podemos validar o selo temporal obtido utilizando a chave anteriormente mencionada.
+
+\SubSection{Outras}
+
+\noindent \textbf{- Confidencialidade atrav\'es do Cart\~ao do Cidad\~ao}\\
+\indent Em casos em que n\~ao temos o aparelho dedicado de cifra \textbf{AES}, o cliente pretende uma solu\c{c}\~ao em que quer garantir a propriedade de confidencialidade usando apenas o cart\~ao do cidad\~ao. No entanto, ap\'os a an\'alise deste requisito, verificamos que isto s\'o se consegue alcan\c{c}ar tendo acesso \`a chave p\'ublica do destinat\'ario, algo que n\~ao \'e poss\'ivel obter no sistema implementado actualmente neste tipo de cart\~oes.\\
+\indent Para tal ser poss\'ivel (uma solu\c{c}\~ao a considerar), ser\'a a cria\c{c}\~ao de um \emph{Key Distribution Center - \textbf{KDC}} que armazenaria as chaves p\'ublicas de todos os clientes que pretendam usar esta funcionalidade. No entanto esta funcionalidade inclu\'i v\'arios riscos sendo que esta s\'o e apenas ser\'a implentada ap\'os aprova\c{c}\~ao do cliente (mediante renegocia\c{c}\~ao do contracto: \textbf{toma de responsabilidade por parte do cliente}).\\
+\indent De modo a alcancar a confidencialidade da forma anteriormente indicada, \'e apresentado em seguida uma descri\c{c}\~ao (sum\'aria) do procedimento:\\
+\indent \indent - Em contraste \`a solu\c{c}\~ao proposta (utiliza\c{c}\~ao da caixa dedicada com cifra \textbf{AES}), para cada mensagem gera-se uma chave sim\'etrica para cifrar o conte\'udo da mesma, utilizando a chave p\'ublica do destinat\'ario para cifrar a chave anteriormente gerada.\\
+\indent \indent - Deste modo, o possu\'idor da chave privada ser\'a capaz de obter a chave sim\'etrica e consequentemente obter a mensagem.\\
+
+\noindent \textbf{- Anexos}\\
+\indent Por forma a permitir a transfer\^encia de ficheiros entre interlocutores de um modo autenticado e/ou confidencial, ser\~ao utilizados os mecanismos referidos em \emph{\textbf{3.1}} e/ou \emph{\textbf{3.2}}. Os ficheiros ser\~ao codififcados em \emph{Base64} e inclu\'idos no corpo da mensagem antes de serem enviados para o destinat\'ario.
+%------------------------------------------------------------------------ 
+\Section{Custo}
+Para a implementa\c{c}\~ao desta aplica\c{c}\~ao foram considerados os seguintes custos (por pessoa/hora - 50 \euro /h):\\
+
+\textbf{Pacote Standard:} \\
+\indent \indent Plug-in para \emph{Mozilla Thunderbird}: 15h\\
+\indent \indent Autentica\c{c}\~ao: 10h \\
+\indent \indent Confidencialidade c/ caixa AES: 24h \\
+
+\textbf{Total Pacote Standard: 2450 \euro} \\
+
+\textbf{Pacote Premium:} \\
+ \indent \indent Pacote Standard\\
+ \indent \indent Selo Temporal: +12h\\
+
+\textbf{Total Pacote Premium: 3250 \euro} \\
+
+\indent \textbf{Funcionalidades opcionais:}\\
+\indent \indent Confidencialidade com cart\~ao do cidad\~ao (14h): + 700 \euro \\
+\indent \indent Anexos (21h): + 1050 \euro \\
+
+%------------------------------------------------------------------------ 
+\Section{Conclus\~ao}
+
+
+%------------------------------------------------------------------------- 
+\nocite{ex1,ex2}
+\bibliographystyle{latex8}
+\bibliography{latex8}
+
+\end{document}
+
