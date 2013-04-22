@@ -11,6 +11,8 @@ skin          aesecure    classic/1.0 chrome/skin/
 
 #Overlays
 overlay chrome://messenger/content/messengercompose/messengercompose.xul chrome/content/aesecureMsgComposeOverlay.xul
+overlay chrome://messenger/content/mailWindowOverlay.xul chrome/content/aesecureMessengerOverlay.xul
+overlay chrome://messenger/content/csMailWindowOverlay.xul chrome/content/aesecureMessengerOverlay.xul
 
 #Modules
 resource aesecure modules/

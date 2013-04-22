@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<overlay id="aesecureMessengerOverlay"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <!-- <script type="application/x-javascript"  src="chrome://***.js"/> -->
+
+<!-- Thunderbird & SeaMonkey 2.x -->
+   <toolbarpalette id="MailToolbarPalette">
+      <toolbarbutton class="toolbarbutton-1"
+              id="button-aesecure-decrypt"
+              label="Decrypt"
+              image="chrome://aesecure/skin/app_icon_24x24.png"
+              oncommand=""
+              buttontype="thunderbird"/>
+  </toolbarpalette>
+
+
+  <!-- Thunderbird 3.0 and newer -->
+  <toolbar id="mail-bar3"
+          defaultset="button-getmsg,button-newmsg,button-chat,button-address,spacer,button-tag,button-aesecure-decrypt,qfb-show-filter-bar,spring,gloda-search,button-appmenu">
+  </toolbar>
+
+</overlay>

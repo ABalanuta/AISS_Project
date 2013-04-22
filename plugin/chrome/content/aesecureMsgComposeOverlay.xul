@@ -9,53 +9,20 @@
 
 
 
-  <!-- menu for all apps 
+  <!-- menu for all apps -->
   <menubar id="mail-menubar">
 
-  	<menu id="menu_AESecure"
+    <menu id="menu_AESecure"
               label="AESecure"
               insertbefore="tasksMenu">
 
-      <menupopup id="menu_menu_AESecurePopup" onpopupshowing="">
-    	
+      <menupopup id="menu_menu_AESecurePopup">
+      
         <menuitem id="AESecure_Auth"
           type="checkbox"
           checked="true"
-          label="Autenticação"/>
-
-        <menuseparator/>
-
-        <menuitem id="AESecure_Confid"
-          type="checkbox"
-          checked="true"
-          label="Confidencialidade"/>
-
-      </menupopup>
-
-    </menu>
-
-  </menubar> -->
-
-
-
-  <!-- Enigmail toolbar button -->
-  <toolbarpalette id="MsgComposeToolbarPalette">
-
-    <toolbarbutton class="toolbarbutton-1"
-            id="button-aesecure-send"
-            type="menu-button"
-            label="AESecure"
-            buttontype="thunderbird"
-            tooltip="aTooltipSet"
-            oncommand="balanuta.run()">
-
-        <menupopup onpopupshowing="">
-
-          <menuitem id="AESecure_Auth"
-          type="checkbox"
-          checked="true"
           label="Autenticação"
-          oncommand=""/>
+          oncommand="auth()"/>
 
         <menuseparator/>
 
@@ -63,10 +30,27 @@
           type="checkbox"
           checked="true"
           label="Confidencialidade"
-          oncommand=""/>
+          oncommand="conf()"/>
 
-        </menupopup>
+      </menupopup>
+
+    </menu>
+
+  </menubar>
+
+
+  <toolbarpalette id="MsgComposeToolbarPalette">
+
+    <toolbarbutton class="toolbarbutton-1"
+            id="button-aesecure-send"
+            type="menu-button"
+            label="Encrypt"
+            image="chrome://aesecure/skin/app_icon_24x24.png"
+            buttontype="thunderbird"
+            tooltip="aTooltipSet"
+            oncommand="balanuta.run()">
     </toolbarbutton>
+
   </toolbarpalette>
 
   <!-- Thunderbird -->

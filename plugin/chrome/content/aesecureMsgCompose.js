@@ -1,13 +1,25 @@
 //Components.utils.import("resource://aesecure/modules/base64.js");
 Components.utils.import("resource://gre/modules/AddonManager.jsm");
 
-var authentication = false;
+var authentication = true;
 var confidentiality = true;
-var addonLoc = "";
+
+function auth(){
+        authentication = !authentication;
+        Components.utils.reportError("auth: "+ authentication);
+    }
+
+function conf(){
+    confidentiality = !confidentiality;
+    Components.utils.reportError("conf: "+ confidentiality);
+}
+
+
 
 var balanuta = {
 
   LiveConnect : {},
+    
     run : function(){
       //Components.utils['import']('resource://aesecure/LiveConnectUtils.js', this.LiveConnect);
       //  var jars = ['URLSetPolicy.jar', 'Test.jar'];
@@ -99,6 +111,8 @@ var balanuta = {
         editor.cut();
         editor.insertText(processesd);
 
+        //Apaga o ficheiro temporario
+        file.remove(false);
 
       });
     }
