@@ -1,19 +1,19 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2013.3.25)  19 APR 2013 13:33
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2013.3.25)  22 APR 2013 21:04
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"/Users/Benny/Dropbox/IST 2012_2013/2Sem/AISS/Project/Contract/TSWLatexianTemp_000520.tex"
+**/Users/Benny/git/AISS_Project/Contract/TSWLatexianTemp_000070.tex
 
 ! Emergency stop.
-<*> ...roject/Contract/TSWLatexianTemp_000520.tex"
+<*> ...Project/Contract/TSWLatexianTemp_000070.tex
                                                   
 *** (job aborted, file error in nonstop mode)
 
  
 Here is how much of TeX's memory you used:
  4 strings out of 493488
- 180 string characters out of 3141326
+ 155 string characters out of 3141326
  49432 words of memory out of 3000000
  3412 multiletter control sequences out of 15000+200000
  3640 words of font info for 14 fonts, out of 3000000 for 9000

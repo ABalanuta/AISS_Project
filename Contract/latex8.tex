@@ -75,7 +75,10 @@ Para al\'em das funcionalidades anteriormente descritas, este pacote incluir\'a 
 \indent \indent - Deste modo, o possu\'idor da chave privada ser\'a capaz de obter a chave sim\'etrica e consequentemente obter a mensagem.\\
 
 \noindent \textbf{- Anexos}\\
-\indent Por forma a permitir a transfer\^encia de ficheiros entre interlocutores de um modo autenticado e/ou confidencial, ser\~ao utilizados os mecanismos referidos em \emph{\textbf{3.1}} e/ou \emph{\textbf{3.2}}. Os ficheiros ser\~ao codififcados em \emph{Base64} e inclu\'idos no corpo da mensagem antes de serem enviados para o destinat\'ario.
+\indent Por forma a permitir a transfer\^encia de ficheiros entre interlocutores de um modo autenticado e/ou confidencial, ser\~ao utilizados os mecanismos referidos em \emph{\textbf{3.1}} e/ou \emph{\textbf{3.2}}. Os ficheiros ser\~ao codififcados em \emph{Base64} e inclu\'idos no corpo da mensagem antes de serem enviados para o destinat\'ario.\\
+
+\noindent \textbf{- Portabilidade Windows}\\
+\indent Por forma a permitir a universalidade de utiliza\c{c}\~ao entre os sistemas operativos mais utilizados, em particular o Windows, ser\'a necess\'ario a adapta\c{c}\~ao da extens\~ao criada para o respectivo sistema.
 %------------------------------------------------------------------------ 
 \Section{Custo}
 Para a implementa\c{c}\~ao desta aplica\c{c}\~ao foram considerados os seguintes custos (por pessoa/hora - 50 \euro /h):\\
@@ -96,12 +99,30 @@ Para a implementa\c{c}\~ao desta aplica\c{c}\~ao foram considerados os seguintes
 \indent \textbf{Funcionalidades opcionais:}\\
 \indent \indent Confidencialidade com cart\~ao do cidad\~ao (14h): + 700 \euro \\
 \indent \indent Anexos (21h): + 1050 \euro \\
+\indent \indent Portabilidade para Windows: + 1500 \euro 
 
+\begin{table}[ht!]
+\caption{Aceita\c{c}\~ao de Condi\c{c}\~oes} % title of Table
+\centering % used for centering table
+\begin{tabular}{c c} % centered columns (4 columns)
+\hline\hline %inserts double horizontal lines
+Especifica\c{c}\~ao & Aceita\c{c}\~ao \\ [0.5ex] % inserts table 
+%heading
+\hline % inserts single horizontal line
+Pacote Standard &  \\[1ex] % inserting body of the table
+Pacote Premium &  \\[1ex]
+Anexos & \\[1ex] 
+Confidencialidade CC & \\[1ex] 
+Portabilidade Windows & \\[1ex] % [1ex] adds vertical space
+\hline %inserts single line
+\end{tabular}
+\label{table:nonlin} % is used to refer this table in the text
+\end{table}
 %------------------------------------------------------------------------ 
 \Section{Conclus\~ao}
-
-Face aos requisitos especificados pelo cliente, foi apresentada uma solu\c{c}\~ao para a cria\c{c}\~ao de uma extens\~ao para um cliente de email \emph{Mozilla Thunderbird} com o respectivo custo de implementa\c{c}\~ao base e inclu\'indo tamb\'em v\'arias funcionalidades extra (definido como o pacote \textbf{Premium}) e/ou opcionais.\\
-\indent Esta solu\c{c}\~ao encontra-se pendente para aprova\c{c}\~ao por parte do cliente, podendo ser alvo de altera\c{c}\~oes a ser apresentadas no contracto final.
+Face aos requisitos especificados pelo cliente, foi apresentada uma solu\c{c}\~ao para a cria\c{c}\~ao de uma extens\~ao para um cliente de email \emph{Mozilla Thunderbird} com o respectivo custo de implementa\c{c}\~ao base e inclu\'indo tamb\'em v\'arias funcionalidades extra (definido como o pacote \textbf{Premium}) e/ou opcionais. Esta solu\c{c}\~ao encontra-se pendente para aprova\c{c}\~ao por parte do cliente, podendo ser alvo de altera\c{c}\~oes a ser apresentadas no contracto final.\\
+\\
+\textbf{Assinatura:}
 %------------------------------------------------------------------------- 
 \nocite{ex1,ex2}
 \bibliographystyle{latex8}
