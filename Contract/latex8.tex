@@ -34,25 +34,28 @@ No \^ambito da cadeira de Algoritmos e Implementa\c{c}\~oes de Sistemas de Segur
 %------------------------------------------------------------------------- 
 \Section{Objectivo}
 
-Esta extens\~ao ser\'a desenvolvida com o intuito de intensificar a seguran\c{c}a na comunica\c{c}\~ao via correio electr\'onico entre utilizadores, recorrendo ao uso do cart\~ao de cidad\~ao e/ou a outros mecanismos criptogr\'aficos (baseados em hardware).
+Esta extens\~ao ser\'a desenvolvida com o intuito de intensificar a seguran\c{c}a na comunica\c{c}\~ao via correio electr\'onico entre utilizadores, recorrendo ao uso do cart\~ao de cidad\~ao e/ou a outros mecanismos criptogr\'aficos (baseados em hardware).\\
+\indent Numa primeira inst\^ancia, esta extens\~ao ser\'a desenvolvida para \emph{Linux} e para \emph{MAC OS}, visto ser poss\'ivel realizar uma implementa\c{c}\~ao mais r\'apida para estes dois sistemas operativos. Existir\'a, caso o cliente queira e aceite as condi\c{c}\~oes respectivas, a possibilidade de criar uma extens\~ao para o sistema operativo Windows.\\
+\indent Ap\'os a realiza\c{c}\~ao do produto (a extens\~ao), ser\'a fornecido ao cliente um \textbf{manual de utiliza\c{c}\~ao} e ao respons\'avel t\'ecnico (escolhido pelo cliente) um \textbf{relat\'orio de teor t\'ecnico} do mesmo.
+
 
 %------------------------------------------------------------------------- 
 \Section{Funcionalidades}
 
 \SubSection{Essenciais - Pacote Standard}
 
-\noindent \textbf{- Plug-in \emph{Mozilla Thunderbird}}\\
+\noindent \textbf{ i) - Plug-in \emph{Mozilla Thunderbird}}\\
 \indent Ser\'a desenvolvido uma extens\~ao para o cliente de email \textbf{\emph{Mozilla Thunderbird}} conforme requisitado pelo cliente. A cria\c{c}\~ao da extens\~ao obriga \`a utiliza\c{c}\~ao de v\'arias linguagens de programa\c{c}\~ao tais como \emph{JavaScript} entre outras. No entanto o cerne da mesma ser\'a desenvolvido em \emph{Java}. \\
 
-\noindent \textbf{- Autentica\c{c}\~ao via cart\~ao de cidad\~ao}\\
+\noindent \textbf{ii) - Autentica\c{c}\~ao via cart\~ao de cidad\~ao}\\
 \indent Para garantir a autenticidade do cliente, ser\'a utilizado o cart\~ao de cidad\~ao com as respectivas bibliotecas \emph{Java}. A mensagem criada pelo cliente ser\'a alvo de duas fun\c{c}\~oes de resumo (\textbf{\emph{hash}}) sendo estas inclu\'idas na assinatura digital, que \'e gerada conforme as opera\c{c}\~oes suportadas pelo cart\~ao do cliente (tecnologia \emph{SmartCard}), nomeadamente a assinatura usando a chave privada do mesmo. \\
 \indent A utiliza\c{c}\~ao de duas fun\c{c}\~oes de resumo (\emph{SHA256} e \emph{RIPEMD160}) permitir\'a reduzir a probabilidade de encontrar colis\~oes visto que \'e muito improv\'avel encontrar outro texto que satisfa\c{c}a ambas as fun\c{c}\~oes de resumo, sendo que estas baseiam-se em algoritmos criptogr\'aficos diferentes.\\
 
-\noindent \textbf{- Confidencialidade}\\
+\noindent \textbf{iii) - Confidencialidade}\\
 \indent Conforme requisitado pelo cliente, ser\'a utilizado um hardware externo (com uma interface baseada em linguagem \emph{C}) que ir\'a permitir a cifra/descifra das mensagens utilizando o algortimo \textbf{AES}. O hardware cont\'em uma chave sim\'etrica (gerada previamente pelo cliente) que ser\'a utilizada (em conjunto com o hardware) para garantir confidencialidade na troca de mensagens.\\
 \indent Ser\'a necess\'aria a implenta\c{c}\~ao de um \emph{binding agent} entre as duas linguagens (\emph{C} e \emph{Java}) de forma a permitir invoca\c{c}\~oes ao hardware.\\
 
-\noindent \textbf{- Procedimento Geral:} \\
+\noindent \textbf{iv) - Procedimento Geral:} \\
 \indent Ap\'os o cliente ter finalizado a sua mensagem, poder\'a escolher qualquer uma das funcionalidades (ou ambas) anteriormente descritas. \\
 \indent \indent \textbf{Envio:} Caso o utilizador escolha ambas as op\c{c}\~oes, a mensagem , em primeiro lugar, ser\'a autenticada com as caracter\'isticas mencionadas anteriormente em \textbf{Autentica\c{c}\~ao via cart\~ao de cidad\~ao}  e seguidamente iremos cifrar a mesma conforme descrito no ponto \textbf{Confidencialidade}. Finalmente o conte\'udo gerado \'e convertido em \emph{Base64} para manter a compatibilidade na tecnologia de transporte de email existente actualmente. Para assinalar o uso de qualquer funcionalidade, o conte\'udo cifrado ser\'a encapsulado com uma \emph{flag} auto-descritiva das op\c{c}\~oes utilizadas.\\
 \indent \indent \textbf{Recep\c{c}\~ao:} Ao receber um email e em fun\c{c}\~ao das op\c{c}\~oes utilizadas (mencionadas atrav\'es da \emph{flag}), iremos efectuar (se necess\'ario) a descifra e valida\c{c}\~ao do conte\'udo.
@@ -61,26 +64,26 @@ Esta extens\~ao ser\'a desenvolvida com o intuito de intensificar a seguran\c{c}
 
 Para al\'em das funcionalidades anteriormente descritas, este pacote incluir\'a uma funcionalidade extra a ser descrita de seguida:\\
 
-\noindent \textbf{- Selo temporal optimizado}\\
-\indent Para garantir uma uniformidade temporal, precisamos de recorrer ao uso de uma entidade externa para autentica\c{c}\~ao temporal das mensagens (\textbf{um servidor TSS - \emph{Time Stamp Service}}). \\
+\noindent \textbf{i) - Selo temporal optimizado}\\
+\indent Para garantir uma coer\^encia/precis\~ao temporal, precisamos de recorrer ao uso de uma entidade externa para autentica\c{c}\~ao temporal das mensagens (\textbf{um servidor TSS - \emph{Time Stamp Service}}), de forma a obter um selo temporal que seja alvo de influ\^encias/ataques por parte dos poss\'iveis interlocutores. Afim de autenticar uma mensagem, ser\'a realizada uma comunica\c{c}\~ao a esta entidade externa que fornecer\'a/retorna o respectivo selo.\\
 \indent O servi\c{c}o baseia-se na utiliza\c{c}\~ao de chaves assim\'etricas para assinatura do \textbf{resumo - \emph{digest}} gerado em fun\c{c}\~ao do conte\'udo j\'a autenticado pelo utilizador em que a chave p\'ublica do servidor \textbf{TSS} \'e conhecida por todos os interlocutores. Deste modo podemos validar o selo temporal obtido utilizando a chave anteriormente mencionada.
 
 \SubSection{Outras}
 
-\noindent \textbf{- Confidencialidade atrav\'es do Cart\~ao do Cidad\~ao}\\
+\noindent \textbf{i) - Confidencialidade atrav\'es do Cart\~ao do Cidad\~ao}\\
 \indent Em casos em que n\~ao temos o aparelho dedicado de cifra \textbf{AES}, o cliente pretende uma solu\c{c}\~ao em que quer garantir a propriedade de confidencialidade usando apenas o cart\~ao do cidad\~ao. No entanto, ap\'os a an\'alise deste requisito, verificamos que isto s\'o se consegue alcan\c{c}ar tendo acesso \`a chave p\'ublica do destinat\'ario, algo que n\~ao \'e poss\'ivel obter no sistema implementado actualmente neste tipo de cart\~oes.\\
 \indent Para tal ser poss\'ivel (uma solu\c{c}\~ao a considerar), ser\'a a cria\c{c}\~ao de um \emph{Key Distribution Center - \textbf{KDC}} que armazenaria as chaves p\'ublicas de todos os clientes que pretendam usar esta funcionalidade. No entanto esta funcionalidade inclu\'i v\'arios riscos sendo que esta s\'o e apenas ser\'a implementada ap\'os aprova\c{c}\~ao do cliente (mediante renegocia\c{c}\~ao do contracto: \textbf{toma de responsabilidade por parte do cliente - servi\c{c}os mantidos pelo servidor remoto}).\\
 \indent De modo a alcan\c{c}ar a confidencialidade da forma anteriormente indicada, \'e apresentado em seguida uma descri\c{c}\~ao (sum\'aria) do procedimento:\\
 \indent \indent - Em contraste \`a solu\c{c}\~ao proposta (utiliza\c{c}\~ao da caixa dedicada com cifra \textbf{AES}), para cada mensagem gera-se uma chave sim\'etrica para cifrar o conte\'udo da mesma, utilizando a chave p\'ublica do destinat\'ario, cifra-se a chave simétrica anteriormente gerada e envia-se o conjunto da mensagem e chave simétrica cifradas para o destinatário.\\
 \indent \indent - Deste modo, o possu\'idor da chave privada ser\'a capaz de obter a chave sim\'etrica e consequentemente obter a mensagem.\\
 
-\noindent \textbf{- Anexos}\\
+\noindent \textbf{ii) - Anexos}\\
 \indent Por forma a permitir a transfer\^encia de ficheiros entre interlocutores de um modo autenticado e/ou confidencial, ser\~ao utilizados os mecanismos referidos em \emph{\textbf{3.1}} e/ou \emph{\textbf{3.2}}. Os ficheiros ser\~ao codififcados em \emph{Base64} e inclu\'idos no corpo da mensagem antes de serem enviados para o destinat\'ario.\\
 
-\noindent \textbf{- Portabilidade Windows}\\
-\indent Por forma a permitir a universalidade de utiliza\c{c}\~ao entre os sistemas operativos mais utilizados, em particular o Windows, ser\'a necess\'ario a adapta\c{c}\~ao da extens\~ao criada para o respectivo sistema.
+\noindent \textbf{iii) - Portabilidade Windows}\\
+\indent Tal como especificado em \textbf{2.}, a extens\~ao será primameiramente deselvolvida para \emph{Linux} e para \emph{MAC OS}. De forma a permitir a universalidade de utiliza\c{c}\~ao entre os sistemas operativos mais utilizados, em particular o Windows, ser\'a necess\'ario a adapta\c{c}\~ao da extens\~ao criada para o respectivo sistema.
 %------------------------------------------------------------------------ 
-\Section{Custo}
+\Section{Custo e Aceita\c{c}\~ao de Condi\c{c}\~oes}
 Para a implementa\c{c}\~ao desta aplica\c{c}\~ao foram considerados os seguintes custos (por pessoa/hora - 50 \euro /h):\\
 
 \textbf{Pacote Standard:} \\
@@ -99,7 +102,12 @@ Para a implementa\c{c}\~ao desta aplica\c{c}\~ao foram considerados os seguintes
 \indent \textbf{Funcionalidades opcionais:}\\
 \indent \indent Confidencialidade com cart\~ao do cidad\~ao (14h): + 700 \euro \\
 \indent \indent Anexos (21h): + 1050 \euro \\
-\indent \indent Portabilidade para Windows: + 1500 \euro 
+\indent \indent Portabilidade para Windows: + 1500 \euro \\
+
+%------------------------------------------------------------------------ 
+Face aos requisitos especificados pelo cliente, foi apresentada uma solu\c{c}\~ao para a cria\c{c}\~ao de uma extens\~ao para um cliente de email \emph{Mozilla Thunderbird} com o respectivo custo de implementa\c{c}\~ao base e inclu\'indo tamb\'em v\'arias funcionalidades extra (definido como o pacote \textbf{Premium}) e/ou opcionais. Esta solu\c{c}\~ao encontra-se pendente para aprova\c{c}\~ao por parte do cliente, podendo ser alvo de altera\c{c}\~oes a ser apresentadas no contracto final.\\
+\\
+\indent \textbf{Prazo:} Ser\'a entregue uma (primeira) vers\~ao da extens\~ao desenvolvida no dia \textbf{10 de Maio de 2013}, sendo que a documenta\c{c}\~ao respectiva (manual de utilizador e relatório t\'ecnico) ser\'a entregue uma semana e meia depois da data mencionada anteriormente.
 
 \begin{table}[ht!]
 \caption{Aceita\c{c}\~ao de Condi\c{c}\~oes} % title of Table
@@ -118,10 +126,7 @@ Portabilidade Windows & \\[1ex] % [1ex] adds vertical space
 \end{tabular}
 \label{table:nonlin} % is used to refer this table in the text
 \end{table}
-%------------------------------------------------------------------------ 
-\Section{Conclus\~ao}
-Face aos requisitos especificados pelo cliente, foi apresentada uma solu\c{c}\~ao para a cria\c{c}\~ao de uma extens\~ao para um cliente de email \emph{Mozilla Thunderbird} com o respectivo custo de implementa\c{c}\~ao base e inclu\'indo tamb\'em v\'arias funcionalidades extra (definido como o pacote \textbf{Premium}) e/ou opcionais. Esta solu\c{c}\~ao encontra-se pendente para aprova\c{c}\~ao por parte do cliente, podendo ser alvo de altera\c{c}\~oes a ser apresentadas no contracto final.\\
-\\
+
 \textbf{Assinatura:}
 %------------------------------------------------------------------------- 
 \nocite{ex1,ex2}
