@@ -66,10 +66,10 @@ var balanuta = {
       AddonManager.getAddonByID("artur.balanuta@ist.utl.pt", function(addon) {
         var addonLocation = new String(addon.getResourceURI("").QueryInterface(Components.interfaces.nsIFileURL).file.path);
 
-        //Components.utils.reportError("location: "+ addonLocation);
+        Components.utils.reportError("location: "+ addonLocation);
 
         var javaClass = addonLocation + "/chrome/content/java/";
-        //Components.utils.reportError("JavaFolder: "+ javaClass);
+        Components.utils.reportError("JavaFolder: "+ javaClass);
 
         var exe = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
         exe.initWithPath("/");
@@ -80,14 +80,32 @@ var balanuta = {
         run.init(exe);       
 
         //Components.utils.reportError("parameters1: "+'"' + encoded + '"');
-        //Components.utils.reportError("parameters2: "+authentication);
+        
         //Components.utils.reportError("parameters3: "+confidentiality);
         //Components.utils.reportError("parameters4: "+'"'+javaClass+'"');
 
         var parameters = [javaClass + "Script.sh", encoded, authentication, confidentiality, '"'+javaClass+'"'];
-        //Components.utils.reportError("parametersALL: "+parameters);
-        run.run(true, parameters, parameters.length);
-        //alert("-cp " + javaClass + "Script.sh", '"' + texto + '"');
+        var parametersMAC = [javaClass + "ScriptMAC.sh", encoded, authentication, confidentiality, '"'+javaClass+'"'];
+        var ua = navigator.userAgent.toLowerCase();
+
+        Components.utils.reportError("parametersALL: "+parameters);
+
+        if (ua.indexOf("win") != -1) {
+            alert("Windows");
+        } else if (ua.indexOf("mac") != -1) {
+            alert("It's a Mac.");
+            run.run(true, parametersMAC, parametersMAC.length);
+        } else if (ua.indexOf("linux") != -1) {
+            alert("Penguin Style - Linux.");
+            run.run(true, parameters, parameters.length);
+        } else if (ua.indexOf("x11") != -1) {
+            alert("Unix");
+        } else {
+            alert("Computers");
+        }
+
+        //run.run(true, parameters, parameters.length);
+        //alert("-cp " + javaClass + "ScriptMAC.sh", '"' + texto + '"');
       
 
 
@@ -97,7 +115,7 @@ var balanuta = {
         file.initWithPath( javaClass+"toSend.txt" );
 
         // Espera por 20 Segundos ate a finalização da escrita
-        for (var i=0 ; i<20; i++)
+        for (var i=0 ; i<5; i++)
         { 
           if ( file.exists() == true ) { 
             break;  
