@@ -1,125 +1,76 @@
 Components.utils.import("resource://gre/modules/AddonManager.jsm");
 
-var authentication = true;
-var confidentiality = true;
 
-function auth(){
-        authentication = !authentication;
-        Components.utils.reportError("auth: "+ authentication);
-    }
-
-function conf(){
-    confidentiality = !confidentiality;
-    Components.utils.reportError("conf: "+ confidentiality);
-}
 
 
 var AESecure = {
 
   LiveConnect : {},
     
-    run : function(){
+    read : function(){
 
-        // Se nenhuma opção escolinha n ão efectuamos nenhuma operação
-        if(!authentication && !confidentiality){
-            return;
-        }
+        //var button = document.getElementById("button-aesecure-decrypt");
+        //button.setAttribute("disabled", "true");
 
-      // Bloqueia o butão de Cifra  
-      var button=document.getElementById("button-aesecure-encrypt");
-      button.setAttribute("disabled", "true");
 
-      // Copia o conteudo Digitado
-      var editor = GetCurrentEditor();  
-      var editor_type = GetCurrentEditorType();  
-      var texto = editor.outputToString('text/html', 2);
-      editor.selectAll();
+        //  WORK
 
-      // Codifica o conteudo em Base64
-      //var encoded = Base64.encode(texto);
 
-      // Localiza o local onde o Plugin esta Instalado
-      AddonManager.getAddonByID("artur.balanuta@ist.utl.pt", function(addon) {
+
+
+        AddonManager.getAddonByID("artur.balanuta@ist.utl.pt", function(addon) {
         var addonLocation = new String(addon.getResourceURI("").QueryInterface(Components.interfaces.nsIFileURL).file.path);
 
-        // Localização da directoria de Jars
         var javaClass = addonLocation + "/chrome/content/java/";
+        //Components.utils.reportError("JavaFolder: "+ javaClass);
 
-
-        // Grava a messagem para um ficheiro de texto
-        var fileIN = Components.classes["@mozilla.org/file/local;1"] 
-        .createInstance(Components.interfaces.nsILocalFile); 
-        fileIN.initWithPath( javaClass + "text.in" );
-        FileManager.Write(fileIN, texto);
-
-
-        //Inicializa os parametros do Executavel para envocar o Script
         var exe = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
         exe.initWithPath("/");
         exe.append("bin");
         exe.append("sh");
                           
-        var run = Components.classes['@mozilla.org/process/util;1'].createInstance(Components.interfaces.nsIProcess);
-        run.init(exe);       
+      //  var run = Components.classes['@mozilla.org/process/util;1'].createInstance(Components.interfaces.nsIProcess);
+//        run.init(exe);       
 
-        // Modo e operaçẽs criptograficas
-        var mode = 0;
-        if(authentication){
-            mdoe = 1;
-        }
-        if(confidentiality){
-            mode = 2;
-        }
-        if(authentication && confidentiality){
-            mode = 3;
-        }
-
-
-        // Inicializa Parametros
-        var parameters = [javaClass + "Script.sh", mode];
-        var parametersMAC = [javaClass + "ScriptMAC.sh", mode];
-
-        // Usa o Script apropriado em funçaõ do OS
-        var ua = navigator.userAgent.toLowerCase()
-        if (ua.indexOf("win") != -1) {
-            alert("Windows");
-        } else if (ua.indexOf("mac") != -1) {
-            alert("It's a Mac.");
-            run.run(true, parametersMAC, parametersMAC.length);
-        } else if (ua.indexOf("linux") != -1) {
-            //alert("Penguin Style - Linux.");
-            run.run(true, parameters, parameters.length);
-        } else if (ua.indexOf("x11") != -1) {
-            alert("Unix");
-        } else {
-            alert("Computers");
-        }
+       // var parameters = [javaClass + "Script.sh", encoded, authentication, confidentiality, '"'+javaClass+'"'];
+        //Components.utils.reportError("parametersALL: "+parameters);
+      //  run.run(true, parameters, parameters.length);
+        //alert("-cp " + javaClass + "Script.sh", '"' + texto + '"');
       
 
-        // Ler o Ficheiro a Enviar
-        var fileOUT = Components.classes["@mozilla.org/file/local;1"] 
+
+        // Ler o Ficheiro Criado
+        var file = Components.classes["@mozilla.org/file/local;1"] 
         .createInstance(Components.interfaces.nsILocalFile); 
-        fileOUT.initWithPath( javaClass+"text.out" );
+        file.initWithPath( javaClass + "text.in" );
+        var text = FileManager.Read(file);
 
 
-        // Espera ate 5 Segundos ate a finalização da escrita
-        for (var i=0 ; i<5; i++)
-        { 
-          if ( fileOUT.exists() == true ) { 
-            break;  
-          } 
-          Components.utils.reportError("Sleep");
-          sleep(1);
-        }
+        var currentReadMessage = document.getElementById("messagepane").contentDocument.body.textContent;
+        //var currentReadMessage = document.getElementById("messagepane").contentDocument.body.innerHTML;
+        //Components.utils.reportError("Message is: "+ currentReadMessage);
+        document.getElementById("messagepane").contentDocument.body.innerHTML = text;
 
-        // Insere o texto processado no corpo da messagem
-        var processesd = FileManager.Read(fileOUT);
-        editor.cut();
-        editor.insertText(processesd);
+        // Espera por 20 Segundos ate a finalização da escrita
+  //      for (var i=0 ; i<20; i++)
+    //    { 
+     //     if ( file.exists() == true ) { 
+      //      break;  
+       //   } 
+        //  Components.utils.reportError("Sleep");
+        //  sleep(1);
+       // }
 
-        //Apaga o ficheiros temporarios
-        fileIN.remove(false)
-        fileOUT.remove(false);
+       // var processesd = FileManager.Read(file);
+
+//        editor.cut();
+ //       editor.insertText(processesd);
+
+        //Apaga o ficheiro temporario
+   //     file.remove(false);
+
+        
+
 
       });
     }
@@ -132,7 +83,6 @@ function sleep(seconds)
   var e = new Date().getTime() + (seconds * 1000);
   while (new Date().getTime() <= e) {}
 }
-
 
 var FileManager =
 {

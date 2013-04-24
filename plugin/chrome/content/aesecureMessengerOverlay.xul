@@ -4,7 +4,7 @@
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <!-- <script type="application/x-javascript"  src="chrome://***.js"/> -->
+  <script type="application/x-javascript"  src="aesecureMessengerOverlay.js"/>
 
 <!-- Thunderbird & SeaMonkey 2.x -->
    <toolbarpalette id="MailToolbarPalette">
@@ -12,7 +12,7 @@
               id="button-aesecure-decrypt"
               label="Decrypt"
               image="chrome://aesecure/skin/app_icon_24x24.png"
-              oncommand=""
+              oncommand="AESecure.read()"
               buttontype="thunderbird"/>
   </toolbarpalette>
 

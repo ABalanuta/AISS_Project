@@ -42,20 +42,19 @@
   <toolbarpalette id="MsgComposeToolbarPalette">
 
     <toolbarbutton class="toolbarbutton-1"
-            id="button-aesecure-send"
+            id="button-aesecure-encrypt"
             type="menu-button"
             label="Encrypt"
             image="chrome://aesecure/skin/app_icon_24x24.png"
             buttontype="thunderbird"
-            tooltip="aTooltipSet"
-            oncommand="balanuta.run()">
+            oncommand="AESecure.run()">
     </toolbarbutton>
 
   </toolbarpalette>
 
   <!-- Thunderbird -->
   <toolbar id="composeToolbar2"
-           defaultset="button-send,separator,button-address,spellingButton,button-attach,button-security,button-save,button-aesecure-send">
+           defaultset="button-send,separator,button-address,spellingButton,button-attach,button-security,button-save,button-aesecure-encrypt">
   </toolbar>
 
 
