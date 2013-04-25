@@ -10,11 +10,23 @@ public class EncryptionEngine implements Engine{
 	private Boolean authentication = null;
 	private Boolean confidentiality = null;
 	private Boolean timestamping = null;
+	private String operations = "";
 	
 	public EncryptionEngine(boolean authentication, boolean confidentiality, boolean timestamping){
 		this.authentication = authentication;
 		this.confidentiality = confidentiality;
 		this.timestamping = timestamping;
+		
+		if(authentication){
+			operations += "A";
+		}
+		if(confidentiality){
+			operations += "C";
+		}
+		if(timestamping){
+			operations += "T";
+		}
+		
 	}
 
 	
@@ -25,13 +37,18 @@ public class EncryptionEngine implements Engine{
 		String signatureBase64First = null; //SHA_256
 		String signatureBase64Second = null;	//RIPMD_160
 		String timeStampBase64 = null;
-		String timeStampsignBase64 = null;
+		String timeStampsignBase64 = null;;
 		
 		FileManager fm = new FileManager();
 		BASE64Encoder base64encoder = new BASE64Encoder();
 		
 		byte[] fileByteContent = fm.getFolderContentInZipByteArray();
+		debug("ByteArray Size is: "+ fileByteContent.length);
 		
+		// 
+		if(fileByteContent == null){
+			return;
+		}
 		
 		
 
@@ -47,7 +64,7 @@ public class EncryptionEngine implements Engine{
 		if(confidentiality){
 			// TODO Chamar invocação para cifrar o conteudo
 			// CipherHandeler ch = new CiptherHandeler("AES...");
-			//contents = ch.encrypt(contents);
+			//fileByteContent = ch.encrypt(fileByteContent);
 		}
 		
 		debug("Engine time");
@@ -62,7 +79,7 @@ public class EncryptionEngine implements Engine{
 		
 		debug("Engine xml");
 		// Gravar o conteudo
-		fm.writeXML(contentsBase64, signatureBase64First, signatureBase64Second);
+		fm.writeXML(operations, contentsBase64, signatureBase64First, signatureBase64Second);
 		
 	}
 	
