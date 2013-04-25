@@ -223,7 +223,7 @@ public class Main
 		byte[] signature = null;
 
 		try{
-			String libName = "libbeidpkcs11.so";
+			String libName = "libpteidpkcs11.so";
 			if (-1 != osName.indexOf("Windows"))
 				libName = "pteidpkcs11.dll";
 			else if (-1 != osName.indexOf("Mac"))
@@ -237,15 +237,19 @@ public class Main
 				Method getInstanceMethode = pkcs11Class.getDeclaredMethod("getInstance", new Class[] { String.class, String.class, CK_C_INITIALIZE_ARGS.class, boolean.class });
 				pkcs11 = (PKCS11)getInstanceMethode.invoke(null, new Object[] { libName, "C_GetFunctionList", null, false });
 			}
-
+			
+			
+			
 			//Open the PKCS11 session77
 
 			p11_session = pkcs11.C_OpenSession(0, PKCS11Constants.CKF_SERIAL_SESSION, null, null);
-
+			
+			CK_SESSION_INFO infor = pkcs11.C_GetSessionInfo(p11_session);
+			
 			// Token login 
 			pkcs11.C_Login(p11_session, 1, null);
 			CK_SESSION_INFO info = pkcs11.C_GetSessionInfo(p11_session);
-
+			
 			// Get available keys 
 			CK_ATTRIBUTE[] attributes = new CK_ATTRIBUTE[1];
 			attributes[0] = new CK_ATTRIBUTE();

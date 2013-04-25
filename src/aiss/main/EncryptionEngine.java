@@ -37,7 +37,7 @@ public class EncryptionEngine implements Engine{
 	public void run() {
 		debug("Engine Run");
 		String contentsBase64 = null;
-		String signatureBase64First = null; //SHA_256
+		String signatureBase64First = null; 	//SHA_256
 		String signatureBase64Second = null;	//RIPMD_160
 		String timeStampBase64 = null;
 		String timeStampsignBase64 = null;;
@@ -48,24 +48,33 @@ public class EncryptionEngine implements Engine{
 		byte[] fileByteContent = fm.getFolderContentInZipByteArray();
 		debug("ByteArray Size is: "+ fileByteContent.length);
 
-		// 
+		// No file Found
 		if(fileByteContent == null){
 			return;
 		}
-		debug("Engine auth");
+		
+		
 		if(authentication){
+			
+			
+			
 			// TODO gerar em funcao do cartao de cidadao
 			// Temp
-			try {
-				signatureBase64First = base64encoder.encode(aiss.ccauthentication.Main.createSignature(fileByteContent,"CKM_RIPEMD160_RSA_PKCS"));
-				System.out.println(signatureBase64First);
-			} catch (PKCS11Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
+			
+			
+			
+//			try {
+//				signatureBase64First = base64encoder.encode(aiss.ccauthentication.Main.createSignature(fileByteContent,"CKM_RIPEMD160_RSA_PKCS"));
+//				System.out.println(signatureBase64First);
+//			} catch (PKCS11Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				
+//			}
 			//			try {
 			//				signatureBase64Second = aiss.ccauthentication.Main.createSignature(fileByteContent, "CKM_RIPEMD160_RSA_PKCS");
 			//			} catch (PKCS11Exception e) {
