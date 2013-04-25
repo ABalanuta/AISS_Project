@@ -1,8 +1,11 @@
 package aiss.main;
 
+import java.io.IOException;
+
 import javax.crypto.Cipher;
 
 import sun.misc.BASE64Encoder;
+import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 public class EncryptionEngine implements Engine{
 	
@@ -31,22 +34,36 @@ public class EncryptionEngine implements Engine{
 		BASE64Encoder base64encoder = new BASE64Encoder();
 		
 		byte[] fileByteContent = fm.getFolderContentInZipByteArray();
-		
-		
-		
-
 		debug("Engine auth");
 		if(authentication){
-			// TODO gerar em função do cartão de cidadão
+			// TODO gerar em funcao do cartao de cidadao
 			// Temp
+			try {
+				signatureBase64First = aiss.ccauthentication.Main.createSignature(fileByteContent,"CKM_SHA256_RSA_PKCS");
+			} catch (PKCS11Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			signatureBase64First = base64encoder.encode(new byte[16]);
+			try {
+				signatureBase64Second = aiss.ccauthentication.Main.createSignature(fileByteContent, "CKM_RIPEMD160_RSA_PKCS");
+			} catch (PKCS11Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			signatureBase64Second = base64encoder.encode(new byte[16]);
 		}
 		
 		debug("Engine conf");
 		if(confidentiality){
-			// TODO Chamar invocação para cifrar o conteudo
-			// CipherHandeler ch = new CiptherHandeler("AES...");
+			// TODO Chamar invocacao para cifrar o conteudo
+			// CipherHandler ch = new CipherHandler("AES...");
 			//contents = ch.encrypt(contents);
 		}
 		

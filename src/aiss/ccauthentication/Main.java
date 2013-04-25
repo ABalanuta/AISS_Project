@@ -188,13 +188,13 @@ public class Main
 			//			}
 			////////////////////////////////////////////////////////////////////////
 
-			boolean isThisYou = signatureIsVerified("dummy string");
-
-			if(isThisYou == true){
-				System.out.println("You're able to prove that you are indeed you, you should be proud of yourself. :) ");
-			} else {
-				System.out.println("Liar liar, pants on fire, this ain't you! :(");
-			}
+			//			boolean isThisYou = signatureIsVerified("dummy string");
+			//
+			//			if(isThisYou == true){
+			//				System.out.println("You're able to prove that you are indeed you, you should be proud of yourself. :) ");
+			//			} else {
+			//				System.out.println("Liar liar, pants on fire, this ain't you! :(");
+			//			}
 
 			// 
 			// Write personal data
@@ -214,7 +214,7 @@ public class Main
 	}
 	////////////////////////// POINT 2 of 2ND CONTRACT /////////////////////////
 
-	public static byte[] createSignature(String nounce) throws PKCS11Exception, IOException{
+	public static String createSignature(byte[] nounce, String algorithm) throws PKCS11Exception, IOException{
 
 		PKCS11 pkcs11;
 		String osName = System.getProperty("os.name");
@@ -260,33 +260,35 @@ public class Main
 
 			pkcs11.C_FindObjectsFinal(p11_session);
 
-			byte[] data = nounce.getBytes();
+			//byte[] data = nounce.getBytes();
 
 			// initialize the signature method 
 			CK_MECHANISM mechanism = new CK_MECHANISM();
-			mechanism.mechanism = PKCS11Constants.CKM_SHA1_RSA_PKCS;
+			if(algorithm.equals("CKM_SHA256_RSA_PKCS")){
+				mechanism.mechanism = PKCS11Constants.CKM_SHA256_RSA_PKCS;
+			} else if (algorithm.equals("CKM_RIPEMD160_RSA_PKCS")){
+				mechanism.mechanism = PKCS11Constants.CKM_RIPEMD160_RSA_PKCS;
+			}
 			mechanism.pParameter = null;
 			pkcs11.C_SignInit(p11_session, mechanism, signatureKey);
 
 			// sign
-			signature = pkcs11.C_Sign(p11_session, data);
+			signature = pkcs11.C_Sign(p11_session, nounce);
 
 		}  catch (Exception e){
 			e.printStackTrace();
 		}
-		return signature;
+		return signature.toString();
 	}
 
-	public static boolean signatureIsVerified(String message){
+	public static boolean signatureIsVerified(String message, byte[] signature){
 
 		boolean verified = false;
 		try {  
 
 			MessageDigest msg = MessageDigest.getInstance("SHA");
 			msg.update(message.getBytes());
-			msg.digest();
-			//String nounce = UUID.randomUUID().toString();			
-			byte[] signature =  createSignature(msg.toString());
+			msg.digest();		
 
 			//verifies the signature
 
@@ -328,7 +330,7 @@ public class Main
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try{
 			String filename = "CitizenPublicKey.pub";
 			FileOutputStream foutStream = new FileOutputStream(filename);
