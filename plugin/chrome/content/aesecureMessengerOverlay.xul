@@ -12,7 +12,7 @@
               id="button-aesecure-decrypt"
               label="Decrypt"
               image="chrome://aesecure/skin/app_icon_24x24.png"
-              oncommand="AESecure.read()"
+              oncommand="AESecure.decrypt()"
               buttontype="thunderbird"/>
   </toolbarpalette>
 

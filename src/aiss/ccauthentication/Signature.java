@@ -19,10 +19,17 @@ import sun.security.pkcs11.wrapper.PKCS11Constants;
 import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 public class Signature {
+	
 	static
 	{
+		String osName = System.getProperty("os.name");
+		if(osName.equals("Linux")){
+			System.out.println("its Linux");
+			System.setProperty("java.library.path","/usr/local/lib/pteid_jni/");
+		}
+		
 		System.out.println(System.getProperty("java.library.path"));
-
+		
 		try{
 			System.loadLibrary("pteidlibj");
 		}catch (UnsatisfiedLinkError e){

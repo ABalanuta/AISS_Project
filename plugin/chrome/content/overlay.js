@@ -45,7 +45,7 @@ var Glodebug = {
         let channel = Services.io.newChannelFromURI(url);
         let chunks = [];
         let unicodeConverter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-                               .createInstance(Ci.nsIScriptableUnicodeConverter);
+        .createInstance(Ci.nsIScriptableUnicodeConverter);
         unicodeConverter.charset = "UTF-8";
         let listener = {
           setMimeHeaders: function () {
@@ -61,7 +61,7 @@ var Glodebug = {
           },
 
           onDataAvailable: function (/* nsIRequest */ aRequest, /* nsISupports */ aContext,
-              /* nsIInputStream */ aStream, /* int */ aOffset, /* int */ aCount) {
+            /* nsIInputStream */ aStream, /* int */ aOffset, /* int */ aCount) {
             // Fortunately, we have in Gecko 2.0 a nice wrapper
             let data = NetUtil.readInputStreamToString(aStream, aCount);
             // Now each character of the string is actually to be understood as a byte
@@ -90,14 +90,14 @@ var Glodebug = {
     // If you don't want to stream the whole message (slow) and don't mind
     // depending on Gloda, you can run a Gloda query.
     this.query =
-      Gloda.getMessageCollectionForHeaders([msgHdr], {
-        onItemsAdded: function (aItems) {},
-        onItemsModified: function () {},
-        onItemsRemoved: function () {},
-        onQueryCompleted: function (aCollection) {
-          add("\t\t\t/---------------------------\\\n");
-          add("\t\t\t|       Gloda results       |\n");
-          add("\t\t\t\\---------------------------/\n\n");
+    Gloda.getMessageCollectionForHeaders([msgHdr], {
+      onItemsAdded: function (aItems) {},
+      onItemsModified: function () {},
+      onItemsRemoved: function () {},
+      onQueryCompleted: function (aCollection) {
+        add("\t\t\t/---------------------------\\\n");
+        add("\t\t\t|       Gloda results       |\n");
+        add("\t\t\t\\---------------------------/\n\n");
           // If zero messages are found, this means either the message hasn't
           // been indexed yet, or the Gloda is disabled for that folder /
           // profile. Use the MimeMessage method to get the information you
@@ -126,13 +126,13 @@ var Glodebug = {
           // See the Gloda Examples on MDC.
         },
       }, true)
-    ;
-    top();
+;
+top();
     // This just kicks a reindexing in, so that if you are writing a Gloda
     // plugin, you can see the reindexing happen...
     GlodaMsgIndexer.indexMessages([
       [x.folder, x.messageKey]
       for each ([, x] in Iterator(gFolderDisplay.selectedMessages))
-    ]);
+        ]);
   }
 }

@@ -188,6 +188,7 @@ public class FileManager {
 
 		} catch (SAXException e) {
 			System.out.println("Shuld not happen SAX");
+			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
 			System.out.println("File Not Found");

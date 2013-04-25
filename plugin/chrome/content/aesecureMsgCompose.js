@@ -2,6 +2,7 @@ Components.utils.import("resource://gre/modules/AddonManager.jsm");
 
 var authentication = true;
 var confidentiality = true;
+var timeStamping = false;
 
 function auth(){
         authentication = !authentication;
@@ -13,27 +14,32 @@ function conf(){
     Components.utils.reportError("conf: "+ confidentiality);
 }
 
+function time(){
+    timeStamping = !timeStamping;
+    Components.utils.reportError("time: "+ timeStamping);
+}
+
 
 var AESecure = {
 
   LiveConnect : {},
     
-    run : function(){
+    encrypt : function(){
 
-        // Se nenhuma opção escolinha n ão efectuamos nenhuma operação
-        if(!authentication && !confidentiality){
+        // Se nenhuma opção escolinha não efectuamos nenhuma operação
+        if(!authentication && !confidentiality && !timeStamping){
             return;
         }
 
       // Bloqueia o butão de Cifra  
-      var button=document.getElementById("button-aesecure-encrypt");
+      var button = document.getElementById("button-aesecure-encrypt");
       button.setAttribute("disabled", "true");
 
       // Copia o conteudo Digitado
       var editor = GetCurrentEditor();  
-      var editor_type = GetCurrentEditorType();  
+      //var editor_type = GetCurrentEditorType();  
       var texto = editor.outputToString('text/html', 2);
-      editor.selectAll();
+      
 
       // Codifica o conteudo em Base64
       //var encoded = Base64.encode(texto);
@@ -49,8 +55,11 @@ var AESecure = {
         // Grava a messagem para um ficheiro de texto
         var fileIN = Components.classes["@mozilla.org/file/local;1"] 
         .createInstance(Components.interfaces.nsILocalFile); 
-        fileIN.initWithPath( javaClass + "text.in" );
+        fileIN.initWithPath( javaClass + "in/" + "text.in" );
         FileManager.Write(fileIN, texto);
+
+        // Acrescentar extençoes
+        // TODO
 
 
         //Inicializa os parametros do Executavel para envocar o Script
@@ -65,7 +74,7 @@ var AESecure = {
         // Modo e operaçẽs criptograficas
         var mode = 0;
         if(authentication){
-            mdoe = 1;
+            mode = 1;
         }
         if(confidentiality){
             mode = 2;
@@ -99,26 +108,28 @@ var AESecure = {
         // Ler o Ficheiro a Enviar
         var fileOUT = Components.classes["@mozilla.org/file/local;1"] 
         .createInstance(Components.interfaces.nsILocalFile); 
-        fileOUT.initWithPath( javaClass+"text.out" );
+        fileOUT.initWithPath( javaClass + "/text.in" );
 
 
         // Espera ate 5 Segundos ate a finalização da escrita
-        for (var i=0 ; i<5; i++)
+        for (var i=0 ; i<50; i++)
         { 
           if ( fileOUT.exists() == true ) { 
             break;  
           } 
           Components.utils.reportError("Sleep");
-          sleep(1);
+          sleep(0.1);
         }
 
         // Insere o texto processado no corpo da messagem
         var processesd = FileManager.Read(fileOUT);
+        editor.selectAll();
+        
         editor.cut();
         editor.insertText(processesd);
 
         //Apaga o ficheiros temporarios
-        fileIN.remove(false)
+        fileIN.remove(false);
         fileOUT.remove(false);
 
       });

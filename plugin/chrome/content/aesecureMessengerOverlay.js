@@ -6,50 +6,90 @@ Components.utils.import("resource://gre/modules/AddonManager.jsm");
 var AESecure = {
 
   LiveConnect : {},
-    
-    read : function(){
+
+  decrypt : function(){
 
         //var button = document.getElementById("button-aesecure-decrypt");
         //button.setAttribute("disabled", "true");
 
-
-        //  WORK
-
+        var texto = document.getElementById("messagepane").contentDocument.body.textContent;
+        //texto = texto.replace( /[\n]+/g, '' );
+        texto = texto.substring(21);
 
 
 
         AddonManager.getAddonByID("artur.balanuta@ist.utl.pt", function(addon) {
-        var addonLocation = new String(addon.getResourceURI("").QueryInterface(Components.interfaces.nsIFileURL).file.path);
+            var addonLocation = new String(addon.getResourceURI("").QueryInterface(Components.interfaces.nsIFileURL).file.path);
+            var javaClass = addonLocation + "/chrome/content/java/";
 
-        var javaClass = addonLocation + "/chrome/content/java/";
-        //Components.utils.reportError("JavaFolder: "+ javaClass);
-
-        var exe = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
-        exe.initWithPath("/");
-        exe.append("bin");
-        exe.append("sh");
-                          
-      //  var run = Components.classes['@mozilla.org/process/util;1'].createInstance(Components.interfaces.nsIProcess);
-//        run.init(exe);       
-
-       // var parameters = [javaClass + "Script.sh", encoded, authentication, confidentiality, '"'+javaClass+'"'];
-        //Components.utils.reportError("parametersALL: "+parameters);
-      //  run.run(true, parameters, parameters.length);
-        //alert("-cp " + javaClass + "Script.sh", '"' + texto + '"');
-      
+            // Grava a messagem para um ficheiro de texto
+            var fileIN = Components.classes["@mozilla.org/file/local;1"] 
+            .createInstance(Components.interfaces.nsILocalFile); 
+            fileIN.initWithPath( javaClass + "text.in" );
+            FileManager.Write(fileIN, texto);
 
 
-        // Ler o Ficheiro Criado
-        var file = Components.classes["@mozilla.org/file/local;1"] 
-        .createInstance(Components.interfaces.nsILocalFile); 
-        file.initWithPath( javaClass + "text.in" );
-        var text = FileManager.Read(file);
+            var exe = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
+            exe.initWithPath("/");
+            exe.append("bin");
+            exe.append("sh");
+
+            var run = Components.classes['@mozilla.org/process/util;1'].createInstance(Components.interfaces.nsIProcess);
+            run.init(exe);       
+
+            var mode = 0;   //Descifra
+
+            // Inicializa Parametros
+            var parameters = [javaClass + "Script.sh", mode];
+            var parametersMAC = [javaClass + "ScriptMAC.sh", mode];
+
+            // Usa o Script apropriado em funçaõ do OS
+            var ua = navigator.userAgent.toLowerCase()
+            if (ua.indexOf("win") != -1) {
+                alert("Windows");
+            } else if (ua.indexOf("mac") != -1) {
+                alert("It's a Mac.");
+                run.run(true, parametersMAC, parametersMAC.length);
+            } else if (ua.indexOf("linux") != -1) {
+                //alert("Penguin Style - Linux.");
+                run.run(true, parameters, parameters.length);
+            } else if (ua.indexOf("x11") != -1) {
+                alert("Unix");
+            } else {
+                alert("Computers");
+            }
+            
+            // Ler o Ficheiro a Processado
+            var fileOUT = Components.classes["@mozilla.org/file/local;1"] 
+            .createInstance(Components.interfaces.nsILocalFile); 
+            fileOUT.initWithPath(javaClass + "in/" + "text.in");
 
 
-        var currentReadMessage = document.getElementById("messagepane").contentDocument.body.textContent;
+            // Espera ate 5 Segundos ate a finalização da escrita
+            for (var i=0 ; i<50; i++)
+            { 
+              if ( fileOUT.exists() == true ) { 
+                break;  
+            }
+            sleep(0.1);
+        }
+
+            // Insere o texto processado no corpo da messagem
+            var processesd = FileManager.Read(fileOUT);
+            document.getElementById("messagepane").contentDocument.body.innerHTML = processesd;
+
+            //Apaga o ficheiros temporarios
+            fileIN.remove(false);
+            fileOUT.remove(false);
+
         //var currentReadMessage = document.getElementById("messagepane").contentDocument.body.innerHTML;
         //Components.utils.reportError("Message is: "+ currentReadMessage);
-        document.getElementById("messagepane").contentDocument.body.innerHTML = text;
+        //document.getElementById("messagepane").contentDocument.body.innerHTML = text;
+
+        
+
+
+
 
         // Espera por 20 Segundos ate a finalização da escrita
   //      for (var i=0 ; i<20; i++)
@@ -69,11 +109,11 @@ var AESecure = {
         //Apaga o ficheiro temporario
    //     file.remove(false);
 
-        
 
 
-      });
-    }
+
+});
+}
 };
 
 
@@ -86,33 +126,33 @@ function sleep(seconds)
 
 var FileManager =
 {
-Write:
+    Write:
     function (File, Text)
     {
         if (!File) return;
         const unicodeConverter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-            .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+        .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 
         unicodeConverter.charset = "UTF-8";
 
         Text = unicodeConverter.ConvertFromUnicode(Text);
         const os = Components.classes["@mozilla.org/network/file-output-stream;1"]
-          .createInstance(Components.interfaces.nsIFileOutputStream);
+        .createInstance(Components.interfaces.nsIFileOutputStream);
         os.init(File, 0x02 | 0x08 | 0x20, 0700, 0);
         os.write(Text, Text.length);
         os.close();
     },
 
-Read:
+    Read:
     function (File)
     {
         if (!File) return;
         var res;
 
         const is = Components.classes["@mozilla.org/network/file-input-stream;1"]
-            .createInstance(Components.interfaces.nsIFileInputStream);
+        .createInstance(Components.interfaces.nsIFileInputStream);
         const sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
-            .createInstance(Components.interfaces.nsIScriptableInputStream);
+        .createInstance(Components.interfaces.nsIScriptableInputStream);
         is.init(File, 0x01, 0400, null);
         sis.init(is);
 

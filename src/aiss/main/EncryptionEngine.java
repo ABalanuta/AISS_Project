@@ -40,7 +40,6 @@ public class EncryptionEngine implements Engine{
 		String contentsBase64 = null;
 		String signatureBase64First = null; 	//SHA_256
 		String signatureBase64Second = null;	//RIPMD_160
-		byte[][] signatures = new byte[2][];
 		String publicKeyBase64 = null;
 		String timeStampBase64 = null;
 		String timeStampsignBase64 = null;;
@@ -63,7 +62,7 @@ public class EncryptionEngine implements Engine{
 
 			try {
 				publicKeyBase64 = base64encoder.encode(aiss.ccauthentication.Signature.obtainPKey());
-				signatures = aiss.ccauthentication.Signature.createSignature(fileByteContent);
+				byte[][] signatures = aiss.ccauthentication.Signature.createSignature(fileByteContent);
 				signatureBase64First = base64encoder.encode(signatures[0]);
 				signatureBase64Second = base64encoder.encode(signatures[1]);
 			} catch (PKCS11Exception e) {

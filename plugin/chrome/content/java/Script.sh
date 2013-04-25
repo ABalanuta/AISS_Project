@@ -1,8 +1,6 @@
 #!/bin/bash          
 SCRIPT=$(dirname $(readlink -f $0))
-#echo $1 > $SCRIPT"/vars.txt"
-#echo "Java: " >> $SCRIPT"/vars.txt"
-#sleep 3
-#java -jar $SCRIPT"/AESecure.jar" $1 >> $SCRIPT"/vars.txt"
-java -jar $SCRIPT"/AESecure.jar" $1
-#rm $SCRIPT"/vars.txt"
+cd $SCRIPT
+java -jar '-Djava.library.path=/usr/local/lib/pteid_jni/' "AESecure.jar" $1  > "log.txt"
+rm input.zip
+cat log.txt

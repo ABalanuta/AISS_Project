@@ -32,6 +32,14 @@
           label="Confidencialidade"
           oncommand="conf()"/>
 
+        <menuseparator/>
+
+        <menuitem id="AESecure_Time"
+          type="checkbox"
+          checked="false"
+          label="TimeStamping"
+          oncommand="time()"/>
+
       </menupopup>
 
     </menu>
@@ -47,7 +55,7 @@
             label="Encrypt"
             image="chrome://aesecure/skin/app_icon_24x24.png"
             buttontype="thunderbird"
-            oncommand="AESecure.run()">
+            oncommand="AESecure.encrypt()">
     </toolbarbutton>
 
   </toolbarpalette>

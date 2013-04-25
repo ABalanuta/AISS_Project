@@ -10,7 +10,7 @@ public class AESecure {
 	private static Engine engine = null;
 
 	public static void main(String args[]){
-
+	
 		if(args.length != 1){
 			System.out.println("Invalid number of Arguments");
 			return;
