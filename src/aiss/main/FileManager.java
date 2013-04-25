@@ -28,7 +28,7 @@ public class FileManager {
 
 	private static final String INFILENAME = "input.zip";
 	private static final String OUTFILENAME = "text.out";
-	private byte[] zipBytes = null;
+	private byte[] zipBytes;
 
 	public static void main(String args[]){
 
@@ -55,7 +55,12 @@ public class FileManager {
 
 		try {
 			in = new RandomAccessFile(new File(INFILENAME), "r");
-			in.readFully(zipBytes);
+			zipBytes = new byte[(int) in.length()];
+			for(int i=0; in.readBoolean() == false; i++){
+				zipBytes[i] = in.readByte();
+			}
+			//in.write(zipBytes);
+			//in.readFully(zipBytes);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
