@@ -1,7 +1,5 @@
-#!/bin/sh 
-
-TARGET_FILE="vars.txt"
-
+#!/bin/sh
+TARGET_FILE=$0
 cd `dirname $TARGET_FILE`
 TARGET_FILE=`basename $TARGET_FILE`
 
@@ -19,5 +17,4 @@ PHYS_DIR=`pwd -P`
 RESULT=$PHYS_DIR/$TARGET_FILE
 echo $RESULT    
 
-java -jar "AESecure.jar" $TARGET_FILE $TARGET_FILE $TARGET_FILE $TARGET_FILE
-#rm $SCRIPT"/vars.txt"
+java -jar "AESecure.jar" 1

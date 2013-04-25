@@ -78,6 +78,14 @@ public class FileManager {
 			FileInputStream in = new FileInputStream(zip);
 			zipBytes = new byte[(int) zip.length()];
 			in.read(zipBytes);
+			
+//			in = new RandomAccessFile(new File(INFILENAME), "r");
+//			zipBytes = new byte[(int) in.length()];
+//			for(int i=0; in.readBoolean() == false; i++){
+//				zipBytes[i] = in.readByte();
+//			}
+			//in.write(zipBytes);
+			//in.readFully(zipBytes);
 
 		} catch (FileNotFoundException e) {
 			System.out.println("Zip file Not Found");
