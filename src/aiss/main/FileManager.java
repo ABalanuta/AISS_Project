@@ -46,7 +46,7 @@ public class FileManager {
 
 		FileManager fm = new FileManager();
 		System.out.println("FileManager test");
-		fm.writeXML("ACT", "text", "sign1", "sign2");
+		fm.writeXML("ACT", "text", "pkey" ,"sign1", "sign2");
 
 	}
 
@@ -108,7 +108,7 @@ public class FileManager {
 		return zipBytes;
 	}
 
-	public void writeXML(String opr, String msg, String sign1, String sign2){
+	public void writeXML(String opr, String msg, String pkey , String sign1, String sign2){
 
 		try {
 
@@ -130,6 +130,11 @@ public class FileManager {
 			message.appendChild(doc.createTextNode(msg));
 			rootElement.appendChild(message);
 
+			// Pkey in Base64
+			Element pubkey = doc.createElement("Public_Key");
+			pubkey.appendChild(doc.createTextNode(pkey));
+			rootElement.appendChild(pubkey);
+			
 			// signature 1 in Base64
 			Element signature1 = doc.createElement("Signature_1");
 			signature1.appendChild(doc.createTextNode(sign1));

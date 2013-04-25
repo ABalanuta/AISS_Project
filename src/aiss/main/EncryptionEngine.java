@@ -1,6 +1,7 @@
 package aiss.main;
 
 import java.io.IOException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
 
@@ -39,6 +40,8 @@ public class EncryptionEngine implements Engine{
 		String contentsBase64 = null;
 		String signatureBase64First = null; 	//SHA_256
 		String signatureBase64Second = null;	//RIPMD_160
+		byte[][] signatures = new byte[2][];
+		String publicKeyBase64 = null;
 		String timeStampBase64 = null;
 		String timeStampsignBase64 = null;;
 
@@ -52,38 +55,27 @@ public class EncryptionEngine implements Engine{
 		if(fileByteContent == null){
 			return;
 		}
-		
-		
+
+
 		if(authentication){
-			
-			
-			
 			// TODO gerar em funcao do cartao de cidadao
 			// Temp
-			
-			
-			
-			
-//			try {
-//				signatureBase64First = base64encoder.encode(aiss.ccauthentication.Main.createSignature(fileByteContent,"CKM_RIPEMD160_RSA_PKCS"));
-//				System.out.println(signatureBase64First);
-//			} catch (PKCS11Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//				
-//			}
-			//			try {
-			//				signatureBase64Second = aiss.ccauthentication.Main.createSignature(fileByteContent, "CKM_RIPEMD160_RSA_PKCS");
-			//			} catch (PKCS11Exception e) {
-			//				// TODO Auto-generated catch block
-			//				e.printStackTrace();
-			//			} catch (IOException e) {
-			//				// TODO Auto-generated catch block
-			//				e.printStackTrace();
-			//			}
+
+			try {
+				publicKeyBase64 = base64encoder.encode(aiss.ccauthentication.Signature.obtainPKey());
+				signatures = aiss.ccauthentication.Signature.createSignature(fileByteContent);
+				signatureBase64First = base64encoder.encode(signatures[0]);
+				signatureBase64Second = base64encoder.encode(signatures[1]);
+			} catch (PKCS11Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidKeySpecException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		debug("Engine conf");
@@ -95,19 +87,17 @@ public class EncryptionEngine implements Engine{
 		}
 
 		debug("Engine time");
+
 		if(timestamping){
 			// TODO TSS
 		}
-
-
 		debug("Engine encode base 64");
 		// passar o conteudo para Base64
 		contentsBase64 = base64encoder.encode(fileByteContent);
 
 		debug("Engine xml");
 		// Gravar o conteudo
-		fm.writeXML(operations, contentsBase64, signatureBase64First, signatureBase64Second);
-
+		fm.writeXML(operations, contentsBase64, publicKeyBase64, signatureBase64First, signatureBase64Second);
 	}
 
 	private static void debug(String log){
