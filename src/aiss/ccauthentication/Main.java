@@ -214,7 +214,7 @@ public class Main
 	}
 	////////////////////////// POINT 2 of 2ND CONTRACT /////////////////////////
 
-	public static String createSignature(byte[] nounce, String algorithm) throws PKCS11Exception, IOException{
+	public static byte[] createSignature(byte[] nounce, String algorithm) throws PKCS11Exception, IOException{
 
 		PKCS11 pkcs11;
 		String osName = System.getProperty("os.name");
@@ -238,7 +238,7 @@ public class Main
 				pkcs11 = (PKCS11)getInstanceMethode.invoke(null, new Object[] { libName, "C_GetFunctionList", null, false });
 			}
 
-			//Open the PKCS11 session
+			//Open the PKCS11 session77
 
 			p11_session = pkcs11.C_OpenSession(0, PKCS11Constants.CKF_SERIAL_SESSION, null, null);
 
@@ -265,7 +265,7 @@ public class Main
 			// initialize the signature method 
 			CK_MECHANISM mechanism = new CK_MECHANISM();
 			if(algorithm.equals("CKM_SHA256_RSA_PKCS")){
-				mechanism.mechanism = PKCS11Constants.CKM_SHA256_RSA_PKCS;
+				mechanism.mechanism = PKCS11Constants.CKM_SHA1_RSA_PKCS;
 			} else if (algorithm.equals("CKM_RIPEMD160_RSA_PKCS")){
 				mechanism.mechanism = PKCS11Constants.CKM_RIPEMD160_RSA_PKCS;
 			}
@@ -278,7 +278,8 @@ public class Main
 		}  catch (Exception e){
 			e.printStackTrace();
 		}
-		return signature.toString();
+		System.out.println(signature.length);
+		return signature;
 	}
 
 	public static boolean signatureIsVerified(String message, byte[] signature){
