@@ -14,6 +14,7 @@ import pteidlib.pteid;
 import sun.security.pkcs11.wrapper.CK_ATTRIBUTE;
 import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
 import sun.security.pkcs11.wrapper.CK_MECHANISM;
+import sun.security.pkcs11.wrapper.CK_SESSION_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
 import sun.security.pkcs11.wrapper.PKCS11Constants;
 import sun.security.pkcs11.wrapper.PKCS11Exception;
@@ -63,11 +64,13 @@ public class Signature {
 				pkcs11 = (PKCS11)getInstanceMethode.invoke(null, new Object[] { libName, "C_GetFunctionList", null, false });
 			}
 
-			//Open the PKCS11 session77
+			//Open the PKCS11 session
+
 			p11_session = pkcs11.C_OpenSession(0, PKCS11Constants.CKF_SERIAL_SESSION, null, null);
 
 			// Token login 
 			pkcs11.C_Login(p11_session, 1, null);
+			CK_SESSION_INFO info = pkcs11.C_GetSessionInfo(p11_session);
 
 			// Get available keys 
 			CK_ATTRIBUTE[] attributes = new CK_ATTRIBUTE[1];
@@ -89,7 +92,7 @@ public class Signature {
 			CK_MECHANISM mechanism = new CK_MECHANISM();
 
 			//first signature
-			mechanism.mechanism = PKCS11Constants.CKM_SHA1_RSA_PKCS;
+			mechanism.mechanism = PKCS11Constants.CKM_SHA256_RSA_PKCS;
 			mechanism.pParameter = null;
 			pkcs11.C_SignInit(p11_session, mechanism, signatureKey);
 			signature[0] = pkcs11.C_Sign(p11_session, nounce);

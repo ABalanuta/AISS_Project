@@ -56,7 +56,6 @@ public class EncryptionEngine implements Engine{
 			return;
 		}
 
-
 		if(authentication){
 			debug("Engine Authentication Service");
 
