@@ -37,28 +37,28 @@ public class EncryptionEngine implements Engine{
 	@Override
 	public void run() {
 		debug("Engine Run");
-		String contentsBase64 = null;
-		String signatureBase64First = null; 	//SHA_256
-		String signatureBase64Second = null;	//RIPMD_160
-		String publicKeyBase64 = null;
-		String timeStampBase64 = null;
-		String timeStampsignBase64 = null;;
+		String contentsBase64 = "";
+		String signatureBase64First = ""; 	//SHA_256
+		String signatureBase64Second = "";	//RIPMD_160
+		String publicKeyBase64 = "";
+		String timeStampBase64 = "";
+		String timeStampSignBase64 = "";
 
 		FileManager fm = new FileManager();
 		BASE64Encoder base64encoder = new BASE64Encoder();
 
 		byte[] fileByteContent = fm.getFolderContentInZipByteArray();
-		debug("ByteArray Size is: "+ fileByteContent.length);
 
-		// No file Found
+		debug("ZIP ByteArray Size is: "+ fileByteContent.length);
+
+		// If no file Found return 
 		if(fileByteContent == null){
 			return;
 		}
 
 
 		if(authentication){
-			// TODO gerar em funcao do cartao de cidadao
-			// Temp
+			debug("Engine Authentication Service");
 
 			try {
 				publicKeyBase64 = base64encoder.encode(aiss.ccauthentication.Signature.obtainPKey());
@@ -66,37 +66,39 @@ public class EncryptionEngine implements Engine{
 				signatureBase64First = base64encoder.encode(signatures[0]);
 				signatureBase64Second = base64encoder.encode(signatures[1]);
 			} catch (PKCS11Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvalidKeySpecException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		debug("Engine conf");
-		if(confidentiality){
-			// TODO Chamar invocaca7o para cifrar o conteudo
-			// CipherHandeler ch = new CiptherHandeler("AES...");
-			//fileByteContent = ch.encrypt(fileByteContent);
 
+		if(confidentiality){
+			debug("Engine Confidentiality Service");
+
+			// TODO Chamar invocaca7o para cifrar o conteudo
+			// CipherHandeler ch = new CipherHandeler("AES...");
+			//fileByteContent = ch.encrypt(fileByteContent);
 		}
 
-		debug("Engine time");
+
 
 		if(timestamping){
-			// TODO TSS
+			debug("Engine TimeStamping Service");
+			
+			timeStampBase64 = "12H";
+			timeStampSignBase64 = "";
 		}
-		debug("Engine encode base 64");
-		// passar o conteudo para Base64
+
+
+		// Passar o conteudo para Base64
 		contentsBase64 = base64encoder.encode(fileByteContent);
 
-		debug("Engine xml");
-		// Gravar o conteudo
-		fm.writeXML(operations, contentsBase64, publicKeyBase64, signatureBase64First, signatureBase64Second);
+		// Escrever o conteudo para um ficheiro XML
+		fm.writeXML(operations, contentsBase64, publicKeyBase64, signatureBase64First,
+				signatureBase64Second,timeStampBase64,timeStampSignBase64);
 	}
 
 	private static void debug(String log){

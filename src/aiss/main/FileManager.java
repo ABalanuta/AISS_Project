@@ -37,25 +37,25 @@ public class FileManager {
 	private static final boolean DEBUG = true;
 	private static final String INZIPFILENAME = "input.zip";
 	private static final String TMPFILENAME = "text.in";
-	
+
 	private static final String OUTPUT_ZIP_FILE = new File("").getAbsolutePath() + "/in.zip";
 	private static final String SOURCE_FOLDER = new File("").getAbsolutePath() + "/in";
 	private byte[] zipBytes = null;
 
 	public static void main(String args[]){
 
-		FileManager fm = new FileManager();
-		System.out.println("FileManager test");
-		fm.writeXML("ACT", "text", "pkey" ,"sign1", "sign2");
+		//FileManager fm = new FileManager();
+		//System.out.println("FileManager test");
+		//fm.writeXML("ACT", "text", "pkey" ,"sign1", "sign2");
 
 	}
 
 
 	public void saveFilesFromZipByteArray(byte[] zipBytes){
-		
+
 		File zip = new File(OUTPUT_ZIP_FILE);
 		File folder = new File(SOURCE_FOLDER);
-		
+
 		debug(zip.getAbsolutePath());
 		debug(folder.getAbsolutePath());
 		ByteArrayInputStream bis = new ByteArrayInputStream(zipBytes);
@@ -64,26 +64,26 @@ public class FileManager {
 
 	@SuppressWarnings("resource")
 	public byte[] getFolderContentInZipByteArray() {
-		
+
 		File zip = new File(OUTPUT_ZIP_FILE);
 		File folder = new File(SOURCE_FOLDER);
 		debug(zip.getAbsolutePath());
 		debug(folder.getAbsolutePath());
 		ZipUtil.pack(folder, zip);
-		
+
 		debug(zip.getAbsolutePath());
-		
+
 		try {
-			
+
 			FileInputStream in = new FileInputStream(zip);
 			zipBytes = new byte[(int) zip.length()];
 			in.read(zipBytes);
-			
-//			in = new RandomAccessFile(new File(INFILENAME), "r");
-//			zipBytes = new byte[(int) in.length()];
-//			for(int i=0; in.readBoolean() == false; i++){
-//				zipBytes[i] = in.readByte();
-//			}
+
+			//			in = new RandomAccessFile(new File(INFILENAME), "r");
+			//			zipBytes = new byte[(int) in.length()];
+			//			for(int i=0; in.readBoolean() == false; i++){
+			//				zipBytes[i] = in.readByte();
+			//			}
 			//in.write(zipBytes);
 			//in.readFully(zipBytes);
 
@@ -97,18 +97,18 @@ public class FileManager {
 			System.out.println("Should not Happen");
 			return null;
 		}
-		
-		
-		
+
+
+
 		// Delete Zip File
 		zip.delete();
 		debug("Zip Deleted");
-		
-		
+
+
 		return zipBytes;
 	}
 
-	public void writeXML(String opr, String msg, String pkey , String sign1, String sign2){
+	public void writeXML(String opr, String msg, String pkey , String sign1, String sign2, String timeS, String timeSsign){
 
 		try {
 
@@ -130,11 +130,11 @@ public class FileManager {
 			message.appendChild(doc.createTextNode(msg));
 			rootElement.appendChild(message);
 
-			// Pkey in Base64
+			// PubKey in Base64
 			Element pubkey = doc.createElement("Public_Key");
 			pubkey.appendChild(doc.createTextNode(pkey));
 			rootElement.appendChild(pubkey);
-			
+
 			// signature 1 in Base64
 			Element signature1 = doc.createElement("Signature_1");
 			signature1.appendChild(doc.createTextNode(sign1));
@@ -144,6 +144,16 @@ public class FileManager {
 			Element signature2 = doc.createElement("Signature_2");
 			signature2.appendChild(doc.createTextNode(sign2));
 			rootElement.appendChild(signature2);
+
+			// TimeStamp in Base64
+			Element timeStamp = doc.createElement("TimeStamp");
+			timeStamp.appendChild(doc.createTextNode(timeS));
+			rootElement.appendChild(timeStamp);
+
+			// TimeStamp Signature in Base64
+			Element timeStampSign = doc.createElement("TimeStampSignature");
+			timeStampSign.appendChild(doc.createTextNode(timeSsign));
+			rootElement.appendChild(timeStampSign);
 
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
