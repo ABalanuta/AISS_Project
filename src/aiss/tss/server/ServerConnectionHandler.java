@@ -146,7 +146,7 @@ public class ServerConnectionHandler extends Thread{
 						System.out.println("Receved " + encodedTextHash.length +" byte Hash");
 
 						String currTime = new Timestamp(System.currentTimeMillis()).toGMTString();
-						System.out.println("Time is " + currTime);
+						System.out.println("Time is : " + currTime);
 
 						try {
 
