@@ -4,15 +4,15 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
 public class TSSClientConnectionHandeler extends Thread{
 
-	//private	final String serverIP = "172.20.41.19";
-	private	final String serverIP = "localhost";
-
+	private String serverIP = "localhost";
+	private final String serverDns = "home.balanuta.com";
 	private	final int serverPort = 4444;
 	private Socket localSock = null;
 	private ObjectInputStream in = null;
@@ -80,9 +80,15 @@ public class TSSClientConnectionHandeler extends Thread{
 
 		this.running = true;
 
+		
+		
+		
 		// Contacting the Server , Retry if error
 		while(true){
 			try{
+				InetAddress ipaddress = InetAddress.getByName(serverDns);
+				serverIP = ipaddress.getHostAddress();
+				System.out.println("Server IP is " + serverIP);
 				this.localSock = new Socket(this.serverIP, this.serverPort);
 				break;
 			}catch(Exception e){
