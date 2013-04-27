@@ -13,11 +13,11 @@ import aiss.tss.aux.KeyManager;
 import sun.awt.windows.ThemeReader;
 import sun.misc.BASE64Encoder;
 
-public class Client {
+public class TSSClient {
 
 	private static final String PUBLIC_KEY_NAME = "pub.key";
 	
-	public boolean validateTimeStamp(byte[] hash, byte[] timeBlob){
+	public static boolean validateTimeStamp(byte[] hash, byte[] timeBlob){
 
 		KeyManager km = new KeyManager();
 		PublicKey pubKey = km.loadPublicKey(PUBLIC_KEY_NAME);
@@ -42,7 +42,7 @@ public class Client {
 		return true;
 	}
 	
-	public String getTimeStamp(byte[] timeBlob){
+	public static String getTimeStamp(byte[] timeBlob){
 		
 		
 		// TODO
@@ -52,10 +52,10 @@ public class Client {
 	
 	// Metodo que permite obter um hash e data de criação, assinado
 	// pelo servidor de TimeStamp 
-	public byte[] generateTimeStamp(byte[] messageHash){
+	public static byte[] generateTimeStamp(byte[] messageHash){
 		
 		// Cria Canal de comunicação
-		ClientConnectionHandeler ch = new ClientConnectionHandeler();
+		TSSClientConnectionHandeler ch = new TSSClientConnectionHandeler();
 		ch.start();
 		
 		KeyManager km = new KeyManager();

@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-public class ClientConnectionHandeler extends Thread{
+public class TSSClientConnectionHandeler extends Thread{
 
 	//private	final String serverIP = "172.20.41.19";
 	private	final String serverIP = "localhost";
@@ -149,9 +149,9 @@ public class ClientConnectionHandeler extends Thread{
 
 		private ObjectInputStream in = null;
 		private boolean running = false;
-		private ClientConnectionHandeler connectionHandler = null;
+		private TSSClientConnectionHandeler connectionHandler = null;
 
-		public InputConnectionHandler(ObjectInputStream in, ClientConnectionHandeler connHandler) {
+		public InputConnectionHandler(ObjectInputStream in, TSSClientConnectionHandeler connHandler) {
 			this.in = in;
 			this.connectionHandler = connHandler;
 		}

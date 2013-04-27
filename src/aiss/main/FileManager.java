@@ -130,7 +130,7 @@ public class FileManager {
 		return zipBytes;
 	}
 
-	public void writeXML(String opr, String msg, String cert , String sign1, String sign2, String timeS, String timeSsign){
+	public void writeXML(String opr, String msg, String cert , String sign1, String sign2, String timeSsign){
 
 		try {
 
@@ -166,11 +166,6 @@ public class FileManager {
 			Element signature2 = doc.createElement("Signature_2");
 			signature2.appendChild(doc.createTextNode(sign2));
 			rootElement.appendChild(signature2);
-
-			// TimeStamp in Base64
-			Element timeStamp = doc.createElement("TimeStamp");
-			timeStamp.appendChild(doc.createTextNode(timeS));
-			rootElement.appendChild(timeStamp);
 
 			// TimeStamp Signature in Base64
 			Element timeStampSign = doc.createElement("TimeStampSignature");

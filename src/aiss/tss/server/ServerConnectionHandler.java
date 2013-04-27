@@ -163,16 +163,15 @@ public class ServerConnectionHandler extends Thread{
 						}
 
 						hMac = new byte[textHash.length + currTime.length()];
-						//System.arraycopy()
 						System.arraycopy(textHash, 0, hMac, 0, textHash.length);
 						System.arraycopy(currTime.getBytes(), 0, hMac, textHash.length, currTime.length());
 
-						BASE64Encoder encoder = new BASE64Encoder();
 						
 						//Debug
-						System.out.println("txt:"+encoder.encode(textHash));
-						System.out.println("time:"+encoder.encode(currTime.getBytes()));
-						System.out.println("both:"+encoder.encode(hMac));
+						//BASE64Encoder encoder = new BASE64Encoder();
+						//System.out.println("txt:"+encoder.encode(textHash));
+						//System.out.println("time:"+encoder.encode(currTime.getBytes()));
+						//System.out.println("both:"+encoder.encode(hMac));
 
 						try {
 
@@ -181,6 +180,7 @@ public class ServerConnectionHandler extends Thread{
 							cipher.init(Cipher.ENCRYPT_MODE, privateKey);
 							byte[] encodedHMac  = cipher.doFinal(hMac);
 							send(encodedHMac);
+							System.out.println("TS sent to Client");
 							Thread.sleep(2000);
 							close();
 						} catch (Exception e) {
