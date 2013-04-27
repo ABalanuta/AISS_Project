@@ -41,7 +41,7 @@ public class FileManager {
 
 	private static final String OUTPUT_ZIP_FILE = new File("").getAbsolutePath() + "/in.zip";
 	private static final String SOURCE_FOLDER = new File("").getAbsolutePath() + "/in";
-	private static final String VALIDATION_FILE = SOURCE_FOLDER + "/validationLog.txt";
+	private static final String VALIDATION_FILE = new File("").getAbsolutePath() + "/validationLog.txt";
 	private byte[] zipBytes = null;
 
 	public static void main(String args[]){
