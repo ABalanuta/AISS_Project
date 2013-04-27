@@ -66,6 +66,8 @@ public class DecryptionEngine implements Engine{
 		// TODO message Validation
 		MessageDigest msg;
 		X509Certificate certificate;
+		String[] senderName = null;
+		String[] senderNationality = null;
 		try {
 			msg = MessageDigest.getInstance("SHA");
 			msg.update(zipBytes);
@@ -74,7 +76,11 @@ public class DecryptionEngine implements Engine{
 			// prepares public key
 			certificate = X509Certificate.getInstance(base64decoder.decodeBuffer(certBase64));
 			PublicKey pubkey = certificate.getPublicKey();
-
+			
+			String[] senderData = certificate.getSubjectDN().getName().split(",");
+			senderName = senderData[0].split("=");
+			senderNationality = senderData[4].split("=");
+			
 			//verifies the signature1
 
 			Signature sig1 = Signature.getInstance("SHA256withRSA");
@@ -96,30 +102,16 @@ public class DecryptionEngine implements Engine{
 			verifiedSecond = sig2.verify(base64decoder.decodeBuffer(signatureBase64Second));
 			debug("VerifiedSecond result: " + verifiedSecond);
 
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  catch (SignatureException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CertificateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 
 		if(verifiedFirst == true && verifiedSecond == true){
 			fm.saveFilesFromZipByteArray(zipBytes);
+			fm.createValidationFile("Validacao Efectuada c/ Sucesso \n" + "Enviado por: " + senderName[1] + "\nNacionalidade: " + senderNationality[1] + "\n");
 		} else if(verifiedFirst == false || verifiedSecond == false){
 			fm.saveFilesFromZipByteArray("Validation Failed! :(".getBytes());
+			fm.createValidationFile("Validacao Nao Efectuada\n");
 		}
 	}
 	private String getXMLvalue(Document doc, String tag){
