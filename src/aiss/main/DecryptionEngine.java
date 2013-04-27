@@ -52,8 +52,9 @@ public class DecryptionEngine implements Engine{
 		debug("Certificate: " + certBase64);
 		debug("Signature_1: " + signatureBase64First);
 		debug("Signature_2: " + signatureBase64Second);
-		
+
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
 
 		try {	
 			zipBytes = base64decoder.decodeBuffer(base64Message);
@@ -63,55 +64,67 @@ public class DecryptionEngine implements Engine{
 			return;
 		}
 
-		// TODO message Validation
-		MessageDigest msg;
-		X509Certificate certificate;
-		String[] senderName = null;
-		String[] senderNationality = null;
-		try {
-			msg = MessageDigest.getInstance("SHA");
-			msg.update(zipBytes);
-			msg.digest();
+		if(operationsTAG.contains("A")){
 
-			// prepares public key
-			certificate = X509Certificate.getInstance(base64decoder.decodeBuffer(certBase64));
-			PublicKey pubkey = certificate.getPublicKey();
-			
-			String[] senderData = certificate.getSubjectDN().getName().split(",");
-			senderName = senderData[0].split("=");
-			senderNationality = senderData[4].split("=");
-			
-			//verifies the signature1
+			// TODO message Validation
+			MessageDigest msg;
+			X509Certificate certificate;
+			String[] senderName = null;
+			String[] senderNationality = null;
 
-			Signature sig1 = Signature.getInstance("SHA256withRSA");
-			sig1.initVerify(pubkey);
+			try {
+				msg = MessageDigest.getInstance("SHA");
+				msg.update(zipBytes);
+				msg.digest();
 
-			//update signature1
+				// prepares public key
+				certificate = X509Certificate.getInstance(base64decoder.decodeBuffer(certBase64));
+				PublicKey pubkey = certificate.getPublicKey();
 
-			sig1.update(zipBytes);      
-			verifiedFirst = sig1.verify(base64decoder.decodeBuffer(signatureBase64First));
-			debug("VerifiedFirst result: " + verifiedFirst);
+				String[] senderData = certificate.getSubjectDN().getName().split(",");
+				senderName = senderData[0].split("=");
+				senderNationality = senderData[4].split("=");
 
-			//verifies the signature2
-			Signature sig2 = Signature.getInstance("RIPEMD160WithRSAEncryption", PROVIDER);
-			sig2.initVerify(pubkey);
-			
-			//update signature2
-			sig2.update(zipBytes);     
+				//verifies the signature1
 
-			verifiedSecond = sig2.verify(base64decoder.decodeBuffer(signatureBase64Second));
-			debug("VerifiedSecond result: " + verifiedSecond);
+				Signature sig1 = Signature.getInstance("SHA256withRSA");
+				sig1.initVerify(pubkey);
 
-		} catch (Exception e) {
-			e.printStackTrace();
+				//update signature1
+
+				sig1.update(zipBytes);      
+				verifiedFirst = sig1.verify(base64decoder.decodeBuffer(signatureBase64First));
+				debug("VerifiedFirst result: " + verifiedFirst);
+
+				//verifies the signature2
+				Signature sig2 = Signature.getInstance("RIPEMD160WithRSAEncryption", PROVIDER);
+				sig2.initVerify(pubkey);
+
+				//update signature2
+				sig2.update(zipBytes);     
+
+				verifiedSecond = sig2.verify(base64decoder.decodeBuffer(signatureBase64Second));
+				debug("VerifiedSecond result: " + verifiedSecond);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+
+			if(verifiedFirst == true && verifiedSecond == true){
+				fm.saveFilesFromZipByteArray(zipBytes);
+				fm.createValidationFile("Validacao Efectuada c/ Sucesso \n" + "Enviado por: " + senderName[1] + "\nNacionalidade: " + senderNationality[1] + "\n");
+			} else if(verifiedFirst == false || verifiedSecond == false){
+				fm.saveFilesFromZipByteArray("Validation Failed! :(".getBytes());
+				fm.createValidationFile("Validacao Nao Efectuada\n");
+			}
 		} 
 
-		if(verifiedFirst == true && verifiedSecond == true){
-			fm.saveFilesFromZipByteArray(zipBytes);
-			fm.createValidationFile("Validacao Efectuada c/ Sucesso \n" + "Enviado por: " + senderName[1] + "\nNacionalidade: " + senderNationality[1] + "\n");
-		} else if(verifiedFirst == false || verifiedSecond == false){
-			fm.saveFilesFromZipByteArray("Validation Failed! :(".getBytes());
-			fm.createValidationFile("Validacao Nao Efectuada\n");
+		if (operationsTAG.contains("C")){
+			//TODO Stuff
+		} 
+
+		if (operationsTAG.contains("T")){
+			//TODO Stuff
 		}
 	}
 	private String getXMLvalue(Document doc, String tag){
