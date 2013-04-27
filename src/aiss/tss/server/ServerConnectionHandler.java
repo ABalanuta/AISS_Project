@@ -15,6 +15,9 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 public class ServerConnectionHandler extends Thread{
 
 	private Socket localSock = null;
@@ -160,13 +163,16 @@ public class ServerConnectionHandler extends Thread{
 						}
 
 						hMac = new byte[textHash.length + currTime.length()];
+						//System.arraycopy()
 						System.arraycopy(textHash, 0, hMac, 0, textHash.length);
 						System.arraycopy(currTime.getBytes(), 0, hMac, textHash.length, currTime.length());
 
+						BASE64Encoder encoder = new BASE64Encoder();
+						
 						//Debug
-						System.out.println(textHash);
-						System.out.println(currTime.getBytes());
-						System.out.println(textHash);
+						System.out.println("txt:"+encoder.encode(textHash));
+						System.out.println("time:"+encoder.encode(currTime.getBytes()));
+						System.out.println("both:"+encoder.encode(hMac));
 
 						try {
 
@@ -180,7 +186,7 @@ public class ServerConnectionHandler extends Thread{
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						
+
 					}else{ System.out.println("Null Value Receved"); }
 
 				} catch(EOFException e){

@@ -144,106 +144,102 @@ public class ClientConnectionHandeler extends Thread{
 
 	}
 
-	public interface OnObjectReceived { public void informArrival(Object dto); }
 
-}
+	class InputConnectionHandler extends Thread{
 
-class InputConnectionHandler extends Thread{
+		private ObjectInputStream in = null;
+		private boolean running = false;
+		private ClientConnectionHandeler connectionHandler = null;
 
-	private ObjectInputStream in = null;
-	private boolean running = false;
-	private ClientConnectionHandeler connectionHandler = null;
+		public InputConnectionHandler(ObjectInputStream in, ClientConnectionHandeler connHandler) {
+			this.in = in;
+			this.connectionHandler = connHandler;
+		}
 
-	public InputConnectionHandler(ObjectInputStream in, ClientConnectionHandeler connHandler) {
-		this.in = in;
-		this.connectionHandler = connHandler;
-	}
+		public boolean isRunning(){
+			return this.running;
+		}
 
-	public boolean isRunning(){
-		return this.running;
-	}
+		@Override
+		public void run() {
+			this.running = true;
 
-	@Override
-	public void run() {
-		this.running = true;
+			while (this.running) {
+				try {
 
-		while (this.running) {
-			try {
+					Object oo = in.readObject();
+					if(oo != null){
 
-				Object oo = in.readObject();
-				if(oo != null){
+						objects.add(oo);
+						System.out.println("Object Receved");
 
-					//Handle Object Receve
-
-
-					System.out.println("Object Receved");
-
-				}else{
-					System.out.println("Null Value Receved");
+					}else{
+						System.out.println("Null Value Receved");
+					}
 				}
-			}
 
-			catch(EOFException e){
-				System.out.println("Channel was closed");
-				this.running = false;
-				return;
-			}
+				catch(EOFException e){
+					System.out.println("Channel was closed");
+					this.running = false;
+					return;
+				}
 
-			catch(SocketException e){
-				System.out.println("Channel is closed");
-				this.running = false;
-				return;
-			}
+				catch(SocketException e){
+					System.out.println("Channel is closed");
+					this.running = false;
+					return;
+				}
 
-			catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
+				catch (IOException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 
+			}
 		}
 	}
-}
 
 
-class OutConnectionHandler extends Thread{
+	class OutConnectionHandler extends Thread{
 
-	private ObjectOutputStream out;
-	private boolean running = false;
+		private ObjectOutputStream out;
+		private boolean running = false;
 
-	public boolean isRunning(){
-		return this.running;
-	}
-
-	public void send(Object oo){
-		try {
-			if(this.running){
-				out.writeObject(oo);
-				out.flush();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		public boolean isRunning(){
+			return this.running;
 		}
 
-	}
-
-	@Override
-	public void run() {
-		this.running = true;
-
-		while (this.running) {
-
+		public void send(Object oo){
 			try {
-				Thread.sleep(2);
-			} catch (InterruptedException e) {
+				if(this.running){
+					out.writeObject(oo);
+					out.flush();
+				}
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
-			//Thread.yield();
 		}
-	}
 
-	public OutConnectionHandler(ObjectOutputStream out) {
-		this.out = out;
+		@Override
+		public void run() {
+			this.running = true;
+
+			while (this.running) {
+
+				try {
+					Thread.sleep(2);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				//Thread.yield();
+			}
+		}
+
+		public OutConnectionHandler(ObjectOutputStream out) {
+			this.out = out;
+		}
 	}
 }
