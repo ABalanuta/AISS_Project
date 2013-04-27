@@ -58,6 +58,10 @@ public class TSSClientConnectionHandeler extends Thread{
 	public void close(){
 		try {
 			out.close();
+			in.close();
+			outc.running = false;
+			inc.running = false;
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -229,7 +233,7 @@ public class TSSClientConnectionHandeler extends Thread{
 			while (this.running) {
 
 				try {
-					Thread.sleep(2);
+					Thread.sleep(50);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

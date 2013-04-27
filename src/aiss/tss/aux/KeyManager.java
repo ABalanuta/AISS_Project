@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 public class KeyManager {
 
 	private static final boolean DEBUG = true;
+	private static final int KEY_SIZE = 1024;
 
 	public void GenerateNewKeys(String pathPrivate, String pathPublic){
 
@@ -29,7 +30,7 @@ public class KeyManager {
 			debug("Should never happen because RSA Algorithm exists");
 		}
 
-		keyGen.initialize(2048);
+		keyGen.initialize(KEY_SIZE);
 		KeyPair keyPair = keyGen.generateKeyPair();
 		PrivateKey privateKey = keyPair.getPrivate();
 		PublicKey  publicKey  = keyPair.getPublic();

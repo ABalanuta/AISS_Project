@@ -42,8 +42,8 @@ public class AESecure {
 			engine = new EncryptionEngine(true, true, false);
 		}
 		else if (mode == 4){
-			debug("Encryption Mode: Auth + Conf + TimeStamp");
-			engine = new EncryptionEngine(true, true, true);
+			debug("Encryption Mode: TimeStamp");
+			engine = new EncryptionEngine(false, false, true);
 		}
 		else if (mode == 5){
 			debug("Encryption Mode: Auth  + TimeStamp");
@@ -52,6 +52,10 @@ public class AESecure {
 		else if (mode == 6){
 			debug("Encryption Mode: Conf  + TimeStamp");
 			engine = new EncryptionEngine(false, true, true);
+		}
+		else if (mode == 7){
+			debug("Encryption Mode: Auth + Conf  + TimeStamp");
+			engine = new EncryptionEngine(true, true, true);
 		}
 		else{
 			System.out.println("Invalid Mode");

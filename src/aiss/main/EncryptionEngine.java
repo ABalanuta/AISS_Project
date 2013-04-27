@@ -95,18 +95,7 @@ public class EncryptionEngine implements Engine{
 			debug("Engine TimeStamping Service");
 
 			BASE64Encoder encoder = new BASE64Encoder();
-			byte[] textHash = null;
-
-			try {
-				
-				MessageDigest timeSig = MessageDigest.getInstance("SHA-256");
-				timeSig.update(fileByteContent);
-				textHash = timeSig.digest();
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
+			byte[] textHash = TSSClient.byteDigestSHA256(fileByteContent);
 			debug("Text SHA-256 Hash: " + encoder.encode(textHash));
 			
 			byte[] timeStamp = TSSClient.generateTimeStamp(textHash);
