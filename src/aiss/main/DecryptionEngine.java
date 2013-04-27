@@ -1,21 +1,17 @@
 package aiss.main;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
-import java.security.SignatureException;
-import javax.security.cert.CertificateException;
+
 import javax.security.cert.X509Certificate;
-import org.w3c.dom.Document;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.w3c.dom.Document;
+import sun.misc.BASE64Decoder;
+import aiss.tss.client.TSSClient;
 
 
 public class DecryptionEngine implements Engine{
@@ -29,13 +25,12 @@ public class DecryptionEngine implements Engine{
 
 		FileManager fm = new FileManager();
 		BASE64Decoder base64decoder = new BASE64Decoder();
-		BASE64Encoder base64encoder = new BASE64Encoder();
 		Document xml = fm.readEncryptedXml();
 		byte[] zipBytes = null;
 		boolean verifiedFirst = false;
 		boolean verifiedSecond = false;
 		final String PROVIDER = BouncyCastleProvider.PROVIDER_NAME;
-
+		String logToClient = "<br>";
 		if(xml == null){
 			debug("Cannot Continue: Aborting");
 			return;
@@ -46,12 +41,14 @@ public class DecryptionEngine implements Engine{
 		String certBase64 = getXMLvalue(xml, "Certificate");
 		String signatureBase64First = getXMLvalue(xml, "Signature_1");
 		String signatureBase64Second = getXMLvalue(xml, "Signature_2");
-
-		debug("Operation: " + operationsTAG);
-		debug("Message: " + base64Message);
-		debug("Certificate: " + certBase64);
-		debug("Signature_1: " + signatureBase64First);
-		debug("Signature_2: " + signatureBase64Second);
+		String timeStampSignBase64 = getXMLvalue(xml, "TimeStampSignature");
+		//
+		//		debug("Operation: " + operationsTAG);
+		//		debug("Message: " + base64Message);
+		//		debug("Certificate: " + certBase64);
+		//		debug("Signature_1: " + signatureBase64First);
+		//		debug("Signature_2: " + signatureBase64Second);
+		//		debug("TimeStampSignature: " + timeStampSignBase64);
 
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
@@ -64,14 +61,15 @@ public class DecryptionEngine implements Engine{
 			return;
 		}
 
+		fm.saveFilesFromZipByteArray(zipBytes);
+
 		if(operationsTAG.contains("A")){
+			debug("Engine Auth Service");
 
 			// TODO message Validation
 			MessageDigest msg;
 			X509Certificate certificate;
-			String[] senderName = null;
-			String[] senderNationality = null;
-
+			String senderData = null;
 			try {
 				msg = MessageDigest.getInstance("SHA");
 				msg.update(zipBytes);
@@ -80,10 +78,8 @@ public class DecryptionEngine implements Engine{
 				// prepares public key
 				certificate = X509Certificate.getInstance(base64decoder.decodeBuffer(certBase64));
 				PublicKey pubkey = certificate.getPublicKey();
-
-				String[] senderData = certificate.getSubjectDN().getName().split(",");
-				senderName = senderData[0].split("=");
-				senderNationality = senderData[4].split("=");
+				System.out.println("Version is: " + certificate.getVersion());
+				senderData = certificate.getSubjectDN().getName();
 
 				//verifies the signature1
 
@@ -92,8 +88,9 @@ public class DecryptionEngine implements Engine{
 
 				//update signature1
 
-				sig1.update(zipBytes);      
-				verifiedFirst = sig1.verify(base64decoder.decodeBuffer(signatureBase64First));
+				sig1.update(zipBytes);
+				byte[] tmp = base64decoder.decodeBuffer(signatureBase64First);
+				verifiedFirst = sig1.verify(tmp);
 				debug("VerifiedFirst result: " + verifiedFirst);
 
 				//verifies the signature2
@@ -111,11 +108,13 @@ public class DecryptionEngine implements Engine{
 			} 
 
 			if(verifiedFirst == true && verifiedSecond == true){
-				fm.saveFilesFromZipByteArray(zipBytes);
-				fm.createValidationFile("Validacao Efectuada c/ Sucesso \n" + "Enviado por: " + senderName[1] + "\nNacionalidade: " + senderNationality[1] + "\n");
+				logToClient += "-----Auth<br>";
+				logToClient += "Validacao Efectuada c/ Sucesso <br>" + "Enviado por: \n\t" + senderData + "<br>";
+				logToClient += "-----<br>";
 			} else if(verifiedFirst == false || verifiedSecond == false){
-				fm.saveFilesFromZipByteArray("Validation Failed! :(".getBytes());
-				fm.createValidationFile("Validacao Nao Efectuada\n");
+				logToClient += "-----Auth<br>";
+				logToClient += "Validacao Nao Efectuada<br>";
+				logToClient += "-----<br>";
 			}
 		} 
 
@@ -124,12 +123,44 @@ public class DecryptionEngine implements Engine{
 		} 
 
 		if (operationsTAG.contains("T")){
-			//TODO Stuff
+			debug("Engine TimeStamping Service");
+
+			byte[] signedTimeStamp = null;
+			try {
+				signedTimeStamp = base64decoder.decodeBuffer(timeStampSignBase64);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			byte[] zipHash = TSSClient.byteDigestSHA256(zipBytes);
+			String timeStamp = TSSClient.getTimeStamp(zipHash, signedTimeStamp);
+			if(timeStamp.contains("GMT")){
+				logToClient += "-----TimeStamp<br>";
+				logToClient += "TimeStamp is Valid! <br>" + "Time of Creation is " + timeStamp + "<br>";
+				logToClient += "-----<br>";
+			}else{
+				logToClient += "-----TimeStamp<br>";
+				logToClient += "TimeStamp is INVALID !!!";
+				logToClient += "-----<br>";
+			}
+		}
+		
+		fm.appendToValidationFile(logToClient);
+		
+		
+	}
+
+	private String getXMLvalue(Document doc, String tag){
+
+		try{
+
+			return doc.getElementsByTagName(tag).item(0).getChildNodes().item(0).getTextContent();
+
+		}catch(NullPointerException e){
+			return null;
 		}
 	}
-	private String getXMLvalue(Document doc, String tag){
-		return doc.getElementsByTagName(tag).item(0).getChildNodes().item(0).getTextContent();
-	}
+
 
 	private static void debug(String log){
 		if(DEBUG){

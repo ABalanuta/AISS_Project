@@ -1,6 +1,7 @@
 package aiss.tss.client;
 
 import java.awt.print.Printable;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.TimeZone;
@@ -17,7 +18,7 @@ public class TSSClient {
 
 	private static final String PUBLIC_KEY_NAME = "pub.key";
 	
-	public static boolean validateTimeStamp(byte[] hash, byte[] timeBlob){
+	public static String getTimeStamp(byte[] hash, byte[] timeBlob){
 
 		KeyManager km = new KeyManager();
 		PublicKey pubKey = km.loadPublicKey(PUBLIC_KEY_NAME);
@@ -36,16 +37,21 @@ public class TSSClient {
 		
 		String hashAndTime = new String(decTimeAndHash);
 		String time = hashAndTime.substring(hash.length, hashAndTime.length());
-		System.out.println(hashAndTime);
-		System.out.println(time);
 		
-		return true;
+		return time;
 	}
 	
-	public static String getTimeStamp(byte[] timeBlob){
-		
-		
-		// TODO
+	
+	public static byte[] byteDigestSHA256(byte[] content){
+		try {
+			
+			MessageDigest timeSig = MessageDigest.getInstance("SHA-256");
+			timeSig.update(content);
+			return timeSig.digest();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
@@ -100,6 +106,11 @@ public class TSSClient {
 		
 		// Devolve a resposta
 		byte[] encTime = (byte[]) ch.receve().get(0);
+		
+		// Desliga canal com o servidor
+		ch.close();
+		
+		
 		return encTime;
 	}
 	
