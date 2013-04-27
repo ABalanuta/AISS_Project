@@ -1,9 +1,17 @@
 package aiss.main;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
+
+import aiss.tss.client.TSSClient;
+
+import com.sun.xml.internal.ws.api.message.Message;
 
 import sun.misc.BASE64Encoder;
 import sun.security.pkcs11.wrapper.PKCS11Exception;
@@ -41,7 +49,6 @@ public class EncryptionEngine implements Engine{
 		String signatureBase64First = ""; 	//SHA_256
 		String signatureBase64Second = "";	//RIPMD_160
 		String certBase64 = "";
-		String timeStampBase64 = "";
 		String timeStampSignBase64 = "";
 
 		FileManager fm = new FileManager();
@@ -86,9 +93,24 @@ public class EncryptionEngine implements Engine{
 
 		if(timestamping){
 			debug("Engine TimeStamping Service");
+
+			BASE64Encoder encoder = new BASE64Encoder();
+			byte[] textHash = null;
+
+			try {
+				
+				MessageDigest timeSig = MessageDigest.getInstance("SHA-256");
+				timeSig.update(fileByteContent);
+				textHash = timeSig.digest();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			debug("Text SHA-256 Hash: " + encoder.encode(textHash));
 			
-			timeStampBase64 = "12H";
-			timeStampSignBase64 = "";
+			byte[] timeStamp = TSSClient.generateTimeStamp(textHash);
+			timeStampSignBase64 = encoder.encode(timeStamp);
 		}
 
 
@@ -97,7 +119,7 @@ public class EncryptionEngine implements Engine{
 
 		// Escrever o conteudo para um ficheiro XML
 		fm.writeXML(operations, contentsBase64, certBase64, signatureBase64First,
-				signatureBase64Second,timeStampBase64,timeStampSignBase64);
+				signatureBase64Second,timeStampSignBase64);
 	}
 
 	private static void debug(String log){

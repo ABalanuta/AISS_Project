@@ -1,4 +1,4 @@
-package aiss.tss.server;
+package aiss.tss.aux;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
