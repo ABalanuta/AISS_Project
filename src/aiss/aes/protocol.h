@@ -5,13 +5,13 @@
 
 #define RESET_CODE 		0
 #define INIT_CODE  		1
-#define INIT_CODE2  		9
+#define INIT_CODE2  	9
 #define UPDATE_CODE		2
-#define DOFINAL_CODE 		3
-#define DATA_CONT_CODE 		5
-#define DATA_COMP_CODE  	6
+#define DOFINAL_CODE 	3
+#define DATA_CONT_CODE 	5
+#define DATA_COMP_CODE  6
 #define STATUS_CODE		7
-#define STATUS_OK_CODE		8
+#define STATUS_OK_CODE	8
 #define ERROR_CODE 		-1
 
 
@@ -90,7 +90,7 @@ char init(u32 mode);
 
 	@return Returning code from the last acknowledge + reply packet
 */
-char  update(u8 * data_in, u32 size, u8 * data_out,u32 * size_out);
+char update(u8 *data_in, u32 size, u8 *data_out,u32 *size_out);
 
 
 /** @brief Dofinal function with no input data
@@ -104,7 +104,7 @@ char  update(u8 * data_in, u32 size, u8 * data_out,u32 * size_out);
 
 	@return Returning code from the last acknowledge + reply packet
 */
-char overloaded  doFinal(u8 * data_out,u32 *size_out);
+char overloaded doFinal(u8 *data_out,u32 *size_out);
 
 
 /** @brief Dofinal function with a last chunk of input data
@@ -121,7 +121,7 @@ char overloaded  doFinal(u8 * data_out,u32 *size_out);
 
 	@return Returning code from the last acknowledge + reply packet
 */
-char overloaded  doFinal(u8 * data_in, u32 size,u8 * data_out,u32 *size_out);
+char overloaded doFinal(u8 *data_in, u32 size,u8 *data_out,u32 *size_out);
 
 
 /** @brief Get Data from a formatted packet
@@ -137,7 +137,7 @@ char overloaded  doFinal(u8 * data_in, u32 size,u8 * data_out,u32 *size_out);
 
 	@return  Code of the packet
 */
-char get_packet_data(packet_t * p, u8 * data, u32 *size);
+char get_packet_data(packet_t* p, u8* data, u32* size);
 
  #endif
 

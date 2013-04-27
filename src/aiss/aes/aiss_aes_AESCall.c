@@ -1,5 +1,5 @@
 #include "util.h"
-#include "com.h"
+//#include "com.h"
 #include "protocol.h"
 #include <stdio.h>
 
@@ -12,7 +12,7 @@
 #define MODE FILE
 
 
-int main(int argc, char*argv[])
+int aes(int argc, char*argv[])
 {
 	char src_file[100],c;
 	char dest_file[100];
@@ -34,7 +34,7 @@ int main(int argc, char*argv[])
 	u32 i,m,j;
 		
 		mode = ROUNDS_10 | ECB_FLAG |FIRST_FLAG| ENCRYPT_FLAG;
-		mode = ROUNDS_10 | ECB_FLAG |FIRST_FLAG | DECRYPT_FLAG;
+		mode = ROUNDS_10 | ECB_FLAG |FIRST_FLAG| DECRYPT_FLAG;
 
 		strcpy(src_file, "infile");
 		strcpy(dest_file, "outfile");
