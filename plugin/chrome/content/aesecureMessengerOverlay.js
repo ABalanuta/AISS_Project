@@ -13,8 +13,11 @@ var AESecure = {
         //button.setAttribute("disabled", "true");
 
         var texto = document.getElementById("messagepane").contentDocument.body.textContent;
-        //texto = texto.replace( /[\n]+/g, '' );
-        texto = texto.substring(21);
+        // remove espaço em branco do inicio do fichero
+        // (tamanho diferente em diferentes os, causa erro de parsing do xml)
+        while(texto.substring(0, 1) != '<'){
+            texto = texto.substring(1);
+        }
 
 
 
