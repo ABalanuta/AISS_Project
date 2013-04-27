@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+
+import javax.security.cert.CertificateEncodingException;
 import javax.security.cert.CertificateException;
 import javax.security.cert.X509Certificate;
 
@@ -109,10 +111,11 @@ public class Signature {
 		return signature;
 	}
 
-	public static byte[] obtainPKey() throws IOException, InvalidKeySpecException{
+	public static byte[] obtainCert() throws IOException, InvalidKeySpecException{
 
-		PublicKey pkey = null;
 		byte[] certAuth = null;
+		X509Certificate cert = null;
+		byte[] result = null;
 
 		try {
 			pteid.Init("");
@@ -127,8 +130,7 @@ public class Signature {
 			for (int i = 0; i < certs.length; i++) {
 				if(certs[i].certifLabel.equals("CITIZEN AUTHENTICATION CERTIFICATE")){
 					certAuth = certs[i].certif;
-					X509Certificate cert = X509Certificate.getInstance(certAuth);
-					pkey = cert.getPublicKey();
+					cert = X509Certificate.getInstance(certAuth);
 				}
 			}
 		} catch (PteidException e1) {
@@ -138,7 +140,13 @@ public class Signature {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return pkey.getEncoded();
+		try {
+			result = cert.getEncoded();
+		} catch (CertificateEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }

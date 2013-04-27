@@ -108,7 +108,7 @@ public class FileManager {
 		return zipBytes;
 	}
 
-	public void writeXML(String opr, String msg, String pkey , String sign1, String sign2, String timeS, String timeSsign){
+	public void writeXML(String opr, String msg, String cert , String sign1, String sign2, String timeS, String timeSsign){
 
 		try {
 
@@ -131,9 +131,9 @@ public class FileManager {
 			rootElement.appendChild(message);
 
 			// PubKey in Base64
-			Element pubkey = doc.createElement("Public_Key");
-			pubkey.appendChild(doc.createTextNode(pkey));
-			rootElement.appendChild(pubkey);
+			Element certificate = doc.createElement("Certificate");
+			certificate.appendChild(doc.createTextNode(cert));
+			rootElement.appendChild(certificate);
 
 			// signature 1 in Base64
 			Element signature1 = doc.createElement("Signature_1");

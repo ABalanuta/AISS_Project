@@ -2,22 +2,21 @@ package aiss.main;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
-import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
-
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 
 public class DecryptionEngine implements Engine{
 
@@ -30,11 +29,12 @@ public class DecryptionEngine implements Engine{
 
 		FileManager fm = new FileManager();
 		BASE64Decoder base64decoder = new BASE64Decoder();
+		BASE64Encoder base64encoder = new BASE64Encoder();
 		Document xml = fm.readEncryptedXml();
 		byte[] zipBytes = null;
-		byte[] pkey = null;
 		boolean verifiedFirst = false;
 		boolean verifiedSecond = false;
+		final String PROVIDER = BouncyCastleProvider.PROVIDER_NAME;
 
 		if(xml == null){
 			debug("Cannot Continue: Aborting");
@@ -43,16 +43,18 @@ public class DecryptionEngine implements Engine{
 
 		String operationsTAG = getXMLvalue(xml, "Operations");
 		String base64Message = getXMLvalue(xml, "Message");
-		String publicKeyBase64 = getXMLvalue(xml, "Public_Key");
+		String certBase64 = getXMLvalue(xml, "Certificate");
 		String signatureBase64First = getXMLvalue(xml, "Signature_1");
 		String signatureBase64Second = getXMLvalue(xml, "Signature_2");
 
 		debug("Operation: " + operationsTAG);
 		debug("Message: " + base64Message);
-		debug("Public_Key: " + publicKeyBase64);
+		debug("Certificate: " + certBase64);
 		debug("Signature_1: " + signatureBase64First);
 		debug("Signature_2: " + signatureBase64Second);
 		
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
 		try {	
 			zipBytes = base64decoder.decodeBuffer(base64Message);
 			debug("ByteArray Size is: "+ zipBytes.length);
@@ -63,17 +65,16 @@ public class DecryptionEngine implements Engine{
 
 		// TODO message Validation
 		MessageDigest msg;
-		KeyFactory keyFactory;
+		X509Certificate certificate;
 		try {
 			msg = MessageDigest.getInstance("SHA");
 			msg.update(zipBytes);
 			msg.digest();
-			
+
 			// prepares public key
-			keyFactory = KeyFactory.getInstance("RSA");
-			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(base64decoder.decodeBuffer(publicKeyBase64));
-			PublicKey pubkey = keyFactory.generatePublic(publicKeySpec);
-			
+			certificate = X509Certificate.getInstance(base64decoder.decodeBuffer(certBase64));
+			PublicKey pubkey = certificate.getPublicKey();
+
 			//verifies the signature1
 
 			Signature sig1 = Signature.getInstance("SHA256withRSA");
@@ -83,17 +84,18 @@ public class DecryptionEngine implements Engine{
 
 			sig1.update(zipBytes);      
 			verifiedFirst = sig1.verify(base64decoder.decodeBuffer(signatureBase64First));
-			debug("Verified result: " + verifiedFirst);
-					
-//			//verifies the signature2
-//			Signature sig2 = Signature.getInstance("RIPEMDwithRSA");
-//			sig2.initVerify(pubkey);
-//
-//			//update signature2
-//			sig2.update(zipBytes);      
-//			verifiedFirst = sig2.verify(base64decoder.decodeBuffer(signatureBase64Second));
-//			debug("Verified result: " + verifiedSecond);
+			debug("VerifiedFirst result: " + verifiedFirst);
+
+			//verifies the signature2
+			Signature sig2 = Signature.getInstance("RIPEMD160WithRSAEncryption", PROVIDER);
+			sig2.initVerify(pubkey);
 			
+			//update signature2
+			sig2.update(zipBytes);     
+
+			verifiedSecond = sig2.verify(base64decoder.decodeBuffer(signatureBase64Second));
+			debug("VerifiedSecond result: " + verifiedSecond);
+
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,19 +105,20 @@ public class DecryptionEngine implements Engine{
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
+		}  catch (SignatureException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SignatureException e) {
+		} catch (CertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		debug("Verified result: " + verifiedFirst);
-		
-		if(verifiedFirst == true /* && verifiedSecond == true */){
+		if(verifiedFirst == true && verifiedSecond == true){
 			fm.saveFilesFromZipByteArray(zipBytes);
-		} else if(verifiedFirst == false /* || verifiedSecond == false */){
+		} else if(verifiedFirst == false || verifiedSecond == false){
 			fm.saveFilesFromZipByteArray("Validation Failed! :(".getBytes());
 		}
 	}

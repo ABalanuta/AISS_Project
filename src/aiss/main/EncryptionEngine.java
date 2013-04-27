@@ -40,7 +40,7 @@ public class EncryptionEngine implements Engine{
 		String contentsBase64 = "";
 		String signatureBase64First = ""; 	//SHA_256
 		String signatureBase64Second = "";	//RIPMD_160
-		String publicKeyBase64 = "";
+		String certBase64 = "";
 		String timeStampBase64 = "";
 		String timeStampSignBase64 = "";
 
@@ -60,7 +60,7 @@ public class EncryptionEngine implements Engine{
 			debug("Engine Authentication Service");
 
 			try {
-				publicKeyBase64 = base64encoder.encode(aiss.ccauthentication.Signature.obtainPKey());
+				certBase64 = base64encoder.encode(aiss.ccauthentication.Signature.obtainCert());
 				byte[][] signatures = aiss.ccauthentication.Signature.createSignature(fileByteContent);
 				signatureBase64First = base64encoder.encode(signatures[0]);
 				signatureBase64Second = base64encoder.encode(signatures[1]);
@@ -96,7 +96,7 @@ public class EncryptionEngine implements Engine{
 		contentsBase64 = base64encoder.encode(fileByteContent);
 
 		// Escrever o conteudo para um ficheiro XML
-		fm.writeXML(operations, contentsBase64, publicKeyBase64, signatureBase64First,
+		fm.writeXML(operations, contentsBase64, certBase64, signatureBase64First,
 				signatureBase64Second,timeStampBase64,timeStampSignBase64);
 	}
 
