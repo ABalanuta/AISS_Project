@@ -71,18 +71,18 @@ var AESecure = {
               if ( fileOUT.exists() == true ) { 
                 break;  
             }
-                sleep(0.1);
-            }
+            sleep(0.1);
+        }
 
             // Insere o texto processado no corpo da messagem
             var processesd = FileManager.Read(fileOUT);
             //document.getElementById("messagepane").contentDocument.body.innerHTML = processesd;
 
              // Ler o Ficheiro a Processado
-            var fileLOG = Components.classes["@mozilla.org/file/local;1"] 
-            .createInstance(Components.interfaces.nsILocalFile); 
-            fileLOG.initWithPath(javaClass + "validationLog.txt");
-            var log = FileManager.Read(fileLOG);
+             var fileLOG = Components.classes["@mozilla.org/file/local;1"] 
+             .createInstance(Components.interfaces.nsILocalFile); 
+             fileLOG.initWithPath(javaClass + "validationLog.txt");
+             var log = FileManager.Read(fileLOG);
             //processesd = processesd.substring(0, processesd.length -19) + "##" + "</body></html>"
             //processed.replace(/\\n/g, "<br/>");
             document.getElementById("messagepane").contentDocument.body.innerHTML = processesd + '<br>';
@@ -91,9 +91,9 @@ var AESecure = {
             //document.getElementById("messagepane").contentDocument.body.textContent = 
 
             //Apaga o ficheiros temporarios
-             //fileIN.remove(false);
-             //fileOUT.remove(false);
-             //fileLOG.remove(false);
+            fileIN.remove(false);
+            fileOUT.remove(false);
+            fileLOG.remove(false);
 
         });
 }
