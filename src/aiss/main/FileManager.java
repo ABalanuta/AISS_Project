@@ -64,42 +64,19 @@ public class FileManager {
 		ZipUtil.unpack(bis, folder);
 	}
 
-	public void createValidationFile(String log, String tag){
+	public void appendToValidationFile(String log){
 
-		File folder = new File(SOURCE_FOLDER);
+		System.out.println("Append to "+ VALIDATION_FILE);
+
 		File logFile = new File(VALIDATION_FILE);
-
-		debug(logFile.getAbsolutePath());
-		debug(folder.getAbsolutePath());
 		try{
-			if(logFile.exists()==false){
-				System.out.println("We had to make a new file.");
-				logFile.createNewFile();
-			}
 			PrintWriter out = new PrintWriter(logFile);
-			out.write("----------AESecure:"+tag+"----------\n" + log + "----------AESecure:"+tag+"----------\n");
+			out.write("----------AESecure:----------\n" + log + "----------AESecure:----------\n");
 			out.close();
 		}catch(IOException e){
 			System.out.println("COULD NOT LOG!!");
 		}
-	}
 
-	public void appendToValidationFile(String log, String tag){
-
-		File logFile = new File(VALIDATION_FILE);
-
-		if(!logFile.exists()){
-			createValidationFile(log,tag);
-		} else {
-
-			try{
-				PrintWriter out = new PrintWriter(logFile);
-				out.append("----------AESecure:"+tag+"----------\n" + log + "----------AESecure:"+tag+"----------\n");
-				out.close();
-			}catch(IOException e){
-				System.out.println("COULD NOT LOG!!");
-			}
-		}
 	}
 
 	@SuppressWarnings("resource")

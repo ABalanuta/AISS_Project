@@ -30,7 +30,7 @@ public class DecryptionEngine implements Engine{
 		boolean verifiedFirst = false;
 		boolean verifiedSecond = false;
 		final String PROVIDER = BouncyCastleProvider.PROVIDER_NAME;
-
+		String logToClient = "";
 		if(xml == null){
 			debug("Cannot Continue: Aborting");
 			return;
@@ -78,6 +78,7 @@ public class DecryptionEngine implements Engine{
 				// prepares public key
 				certificate = X509Certificate.getInstance(base64decoder.decodeBuffer(certBase64));
 				PublicKey pubkey = certificate.getPublicKey();
+				System.out.println("Version is: " + certificate.getVersion());
 				senderData = certificate.getSubjectDN().getName();
 
 				//verifies the signature1
@@ -107,9 +108,13 @@ public class DecryptionEngine implements Engine{
 			} 
 
 			if(verifiedFirst == true && verifiedSecond == true){
-				fm.appendToValidationFile("Validacao Efectuada c/ Sucesso \n" + "Enviado por: \n\t" + senderData + "\n", "Authentication");
+				logToClient += "-----Auth\n";
+				logToClient += "Validacao Efectuada c/ Sucesso \n" + "Enviado por: \n\t" + senderData + "\n";
+				logToClient += "-----\n";
 			} else if(verifiedFirst == false || verifiedSecond == false){
-				fm.appendToValidationFile("Validacao Nao Efectuada\n", "Authentication");
+				logToClient += "-----Auth\n";
+				logToClient += "Validacao Nao Efectuada\n";
+				logToClient += "-----\n";
 			}
 		} 
 
@@ -130,11 +135,19 @@ public class DecryptionEngine implements Engine{
 			byte[] zipHash = TSSClient.byteDigestSHA256(zipBytes);
 			String timeStamp = TSSClient.getTimeStamp(zipHash, signedTimeStamp);
 			if(timeStamp.contains("GMT")){
-				fm.appendToValidationFile("TimeStamp is Valid! \n" + "Time of Creation is " + timeStamp + "\n","TimeStamping");
+				logToClient += "-----TimeStamp\n";
+				logToClient += "TimeStamp is Valid! \n" + "Time of Creation is " + timeStamp + "\n";
+				logToClient += "-----\n";
 			}else{
-				fm.appendToValidationFile("TimeStamp is INVALID !!!","TimeStamping");
+				logToClient += "-----TimeStamp\n";
+				logToClient += "TimeStamp is INVALID !!!";
+				logToClient += "-----\n";
 			}
-		}	
+		}
+		
+		fm.appendToValidationFile(logToClient);
+		
+		
 	}
 
 	private String getXMLvalue(Document doc, String tag){
