@@ -30,7 +30,7 @@ public class DecryptionEngine implements Engine{
 		boolean verifiedFirst = false;
 		boolean verifiedSecond = false;
 		final String PROVIDER = BouncyCastleProvider.PROVIDER_NAME;
-		String logToClient = "";
+		String logToClient = "<br>";
 		if(xml == null){
 			debug("Cannot Continue: Aborting");
 			return;
@@ -108,13 +108,13 @@ public class DecryptionEngine implements Engine{
 			} 
 
 			if(verifiedFirst == true && verifiedSecond == true){
-				logToClient += "-----Auth\n";
-				logToClient += "Validacao Efectuada c/ Sucesso \n" + "Enviado por: \n\t" + senderData + "\n";
-				logToClient += "-----\n";
+				logToClient += "-----Auth<br>";
+				logToClient += "Validacao Efectuada c/ Sucesso <br>" + "Enviado por: \n\t" + senderData + "<br>";
+				logToClient += "-----<br>";
 			} else if(verifiedFirst == false || verifiedSecond == false){
-				logToClient += "-----Auth\n";
-				logToClient += "Validacao Nao Efectuada\n";
-				logToClient += "-----\n";
+				logToClient += "-----Auth<br>";
+				logToClient += "Validacao Nao Efectuada<br>";
+				logToClient += "-----<br>";
 			}
 		} 
 
@@ -135,13 +135,13 @@ public class DecryptionEngine implements Engine{
 			byte[] zipHash = TSSClient.byteDigestSHA256(zipBytes);
 			String timeStamp = TSSClient.getTimeStamp(zipHash, signedTimeStamp);
 			if(timeStamp.contains("GMT")){
-				logToClient += "-----TimeStamp\n";
-				logToClient += "TimeStamp is Valid! \n" + "Time of Creation is " + timeStamp + "\n";
-				logToClient += "-----\n";
+				logToClient += "-----TimeStamp<br>";
+				logToClient += "TimeStamp is Valid! <br>" + "Time of Creation is " + timeStamp + "<br>";
+				logToClient += "-----<br>";
 			}else{
-				logToClient += "-----TimeStamp\n";
+				logToClient += "-----TimeStamp<br>";
 				logToClient += "TimeStamp is INVALID !!!";
-				logToClient += "-----\n";
+				logToClient += "-----<br>";
 			}
 		}
 		

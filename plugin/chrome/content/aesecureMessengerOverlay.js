@@ -81,20 +81,23 @@ var AESecure = {
              // Ler o Ficheiro a Processado
             var fileLOG = Components.classes["@mozilla.org/file/local;1"] 
             .createInstance(Components.interfaces.nsILocalFile); 
-            fileLOG.initWithPath(javaClass + "in/" + "validationLog.txt");
+            fileLOG.initWithPath(javaClass + "validationLog.txt");
             var log = FileManager.Read(fileLOG);
-            document.getElementById("messagepane").contentDocument.body.innerHTML = log + '\n' + processesd;
+            //processesd = processesd.substring(0, processesd.length -19) + "##" + "</body></html>"
+            //processed.replace(/\\n/g, "<br/>");
+            document.getElementById("messagepane").contentDocument.body.innerHTML = processesd + '<br>';
+            document.getElementById("messagepane").contentDocument.body.innerHTML += log;
+
+            //document.getElementById("messagepane").contentDocument.body.textContent = 
 
             //Apaga o ficheiros temporarios
-            // fileIN.remove(false);
-            // fileOUT.remove(false);
-            // fileLOG.remove(false);
+             //fileIN.remove(false);
+             //fileOUT.remove(false);
+             //fileLOG.remove(false);
 
         });
 }
 };
-
-
 
 function sleep(seconds) 
 {
