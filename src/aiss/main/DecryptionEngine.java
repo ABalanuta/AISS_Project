@@ -32,7 +32,7 @@ public class DecryptionEngine implements Engine{
 		byte[] zipBytes = null;
 		boolean verified = false;
 		final String PROVIDER = BouncyCastleProvider.PROVIDER_NAME;
-		String logToClient = "<br>";
+		String logToClient = "";
 		if(xml == null){
 			debug("Cannot Continue: Aborting");
 			return;
@@ -62,13 +62,17 @@ public class DecryptionEngine implements Engine{
 			return;
 		}
 		
-		
+		// Se a messagem foi cifrada vamos descifra-la
 		if (operationsTAG.contains("C")){
 			debug("Engine Confidentiality Service");
 
 			// BACKUP MODE
 			MyAES aes = new MyAES();
 			zipBytes = aes.CipherAll(MyAES.DECRYPT, "AES_KEY_256.key", MyAES.CBC, zipBytes);
+			
+			logToClient += "-----Conf<br>\n";
+			logToClient += "Cifrado com AES<br>\n";
+			logToClient += "-----<br>\n";
 
 		}
 		
@@ -118,13 +122,13 @@ public class DecryptionEngine implements Engine{
 			} 
 
 			if(verified == true){
-				logToClient += "-----Auth<br>";
-				logToClient += "Validacao Efectuada c/ Sucesso <br>" + "Enviado por: \n\t" + senderData + "<br>";
-				logToClient += "-----<br>";
+				logToClient += "-----Auth<br>\n";
+				logToClient += "Validacao Efectuada c/ Sucesso <br>\n" + "Enviado por: \n\t" + senderData + "<br>\n";
+				logToClient += "-----<br>\n";
 			} else if(verified == false){
-				logToClient += "-----Auth<br>";
-				logToClient += "Validacao Nao Efectuada<br>";
-				logToClient += "-----<br>";
+				logToClient += "-----Auth<br>\n";
+				logToClient += "Validacao Nao Efectuada<br>\n";
+				logToClient += "-----<br>\n";
 			}
 		} 
 
@@ -143,9 +147,9 @@ public class DecryptionEngine implements Engine{
 			byte[] zipHash = TSSClient.byteDigestSHA256(zipBytes);
 			String timeStamp = TSSClient.getTimeStamp(zipHash, signedTimeStamp);
 			if(timeStamp.contains("GMT")){
-				logToClient += "-----TimeStamp<br>";
-				logToClient += "TimeStamp is Valid! <br>" + "Time of Creation is " + timeStamp + "<br>";
-				logToClient += "-----<br>";
+				logToClient += "-----TimeStamp<br>\n";
+				logToClient += "TimeStamp is Valid! <br>\n" + "Time of Creation is " + timeStamp + "<br>\n";
+				logToClient += "-----<br>\n";
 			}else{
 				logToClient += "-----TimeStamp<br>";
 				logToClient += "TimeStamp is INVALID !!!";

@@ -66,12 +66,12 @@ public class FileManager {
 
 	public void appendToValidationFile(String log){
 
-		System.out.println("Append to "+ VALIDATION_FILE);
+		debug("Append to "+ VALIDATION_FILE);
 
 		File logFile = new File(VALIDATION_FILE);
 		try{
 			PrintWriter out = new PrintWriter(logFile);
-			out.write("----------AESecure:----------\n" + log + "----------AESecure:----------\n");
+			out.write("----------AESecure:----------<br>\n" + log + "----------AESecure:----------<br>\n");
 			out.close();
 		}catch(IOException e){
 			System.out.println("COULD NOT LOG!!");
