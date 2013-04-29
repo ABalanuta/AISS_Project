@@ -27,8 +27,7 @@ public class DecryptionEngine implements Engine{
 		BASE64Decoder base64decoder = new BASE64Decoder();
 		Document xml = fm.readEncryptedXml();
 		byte[] zipBytes = null;
-		boolean verifiedFirst = false;
-		boolean verifiedSecond = false;
+		boolean verified = false;
 		final String PROVIDER = BouncyCastleProvider.PROVIDER_NAME;
 		String logToClient = "<br>";
 		if(xml == null){
@@ -39,8 +38,7 @@ public class DecryptionEngine implements Engine{
 		String operationsTAG = getXMLvalue(xml, "Operations");
 		String base64Message = getXMLvalue(xml, "Message");
 		String certBase64 = getXMLvalue(xml, "Certificate");
-		String signatureBase64First = getXMLvalue(xml, "Signature_1");
-		String signatureBase64Second = getXMLvalue(xml, "Signature_2");
+		String signatureBase64 = getXMLvalue(xml, "Signature");
 		String timeStampSignBase64 = getXMLvalue(xml, "TimeStampSignature");
 		//
 		//		debug("Operation: " + operationsTAG);
@@ -67,51 +65,49 @@ public class DecryptionEngine implements Engine{
 			debug("Engine Auth Service");
 
 			// TODO message Validation
-			MessageDigest msg;
 			X509Certificate certificate;
 			String senderData = null;
 			try {
-				msg = MessageDigest.getInstance("SHA");
-				msg.update(zipBytes);
-				msg.digest();
+				
+				MessageDigest md1 = MessageDigest.getInstance("SHA-256");
+				md1.update(zipBytes);
+				byte[] mdigest1 = md1.digest();
+				
+				//second hash/digest
+				MessageDigest md2 = MessageDigest.getInstance("RIPEMD160",PROVIDER);
+				md2.update(zipBytes);
+				byte[] mdigest2 = md2.digest();
+				
+				byte[] mdigestTotal = new byte[mdigest1.length + mdigest2.length];
+				System.arraycopy(mdigest1,0,mdigestTotal,0,mdigest1.length);
+				System.arraycopy(mdigest2,0,mdigestTotal,mdigest1.length,mdigest2.length);
 
 				// prepares public key
 				certificate = X509Certificate.getInstance(base64decoder.decodeBuffer(certBase64));
 				PublicKey pubkey = certificate.getPublicKey();
-				System.out.println("Version is: " + certificate.getVersion());
 				senderData = certificate.getSubjectDN().getName();
 
 				//verifies the signature1
 
-				Signature sig1 = Signature.getInstance("SHA256withRSA");
-				sig1.initVerify(pubkey);
+				Signature sig = Signature.getInstance("SHA1withRSA");
+				sig.initVerify(pubkey);
 
 				//update signature1
 
-				sig1.update(zipBytes);
-				byte[] tmp = base64decoder.decodeBuffer(signatureBase64First);
-				verifiedFirst = sig1.verify(tmp);
-				debug("VerifiedFirst result: " + verifiedFirst);
-
-				//verifies the signature2
-				Signature sig2 = Signature.getInstance("RIPEMD160WithRSAEncryption", PROVIDER);
-				sig2.initVerify(pubkey);
-
-				//update signature2
-				sig2.update(zipBytes);     
-
-				verifiedSecond = sig2.verify(base64decoder.decodeBuffer(signatureBase64Second));
-				debug("VerifiedSecond result: " + verifiedSecond);
+				sig.update(mdigestTotal);
+				byte[] tmp = base64decoder.decodeBuffer(signatureBase64);
+				verified = sig.verify(tmp);
+				debug("Verified result: " + verified);
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
 
-			if(verifiedFirst == true && verifiedSecond == true){
+			if(verified == true){
 				logToClient += "-----Auth<br>";
 				logToClient += "Validacao Efectuada c/ Sucesso <br>" + "Enviado por: \n\t" + senderData + "<br>";
 				logToClient += "-----<br>";
-			} else if(verifiedFirst == false || verifiedSecond == false){
+			} else if(verified == false){
 				logToClient += "-----Auth<br>";
 				logToClient += "Validacao Nao Efectuada<br>";
 				logToClient += "-----<br>";

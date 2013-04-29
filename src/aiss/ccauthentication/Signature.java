@@ -42,13 +42,13 @@ public class Signature {
 	}
 
 
-	public static byte[][] createSignature(byte[] nounce) throws PKCS11Exception, IOException{
+	public static byte[] createSignature(byte[] nounce) throws PKCS11Exception, IOException{
 
 		PKCS11 pkcs11;
 		String osName = System.getProperty("os.name");
 		String javaVersion = System.getProperty("java.version");
 		long p11_session = 0;
-		byte[][] signature = new byte[2][];
+		byte[] signature = null;
 
 		try{
 			String libName = "libpteidpkcs11.so";
@@ -94,16 +94,10 @@ public class Signature {
 			CK_MECHANISM mechanism = new CK_MECHANISM();
 
 			//first signature
-			mechanism.mechanism = PKCS11Constants.CKM_SHA256_RSA_PKCS;
+			mechanism.mechanism = PKCS11Constants.CKM_SHA1_RSA_PKCS;
 			mechanism.pParameter = null;
 			pkcs11.C_SignInit(p11_session, mechanism, signatureKey);
-			signature[0] = pkcs11.C_Sign(p11_session, nounce);
-
-			//second signature
-			mechanism.mechanism = PKCS11Constants.CKM_RIPEMD160_RSA_PKCS;
-			mechanism.pParameter = null;
-			pkcs11.C_SignInit(p11_session, mechanism, signatureKey);
-			signature[1] = pkcs11.C_Sign(p11_session, nounce);
+			signature = pkcs11.C_Sign(p11_session, nounce);
 
 		}  catch (Exception e){
 			e.printStackTrace();
@@ -148,5 +142,4 @@ public class Signature {
 		}
 		return result;
 	}
-
 }

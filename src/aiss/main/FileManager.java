@@ -125,7 +125,7 @@ public class FileManager {
 		return zipBytes;
 	}
 
-	public void writeXML(String opr, String msg, String cert , String sign1, String sign2, String timeSsign){
+	public void writeXML(String opr, String msg, String cert , String sign, String timeSsign){
 
 		try {
 
@@ -153,14 +153,9 @@ public class FileManager {
 			rootElement.appendChild(certificate);
 
 			// signature 1 in Base64
-			Element signature1 = doc.createElement("Signature_1");
-			signature1.appendChild(doc.createTextNode(sign1));
-			rootElement.appendChild(signature1);
-
-			// signature 2 in Base64
-			Element signature2 = doc.createElement("Signature_2");
-			signature2.appendChild(doc.createTextNode(sign2));
-			rootElement.appendChild(signature2);
+			Element signature = doc.createElement("Signature");
+			signature.appendChild(doc.createTextNode(sign));
+			rootElement.appendChild(signature);
 
 			// TimeStamp Signature in Base64
 			Element timeStampSign = doc.createElement("TimeStampSignature");

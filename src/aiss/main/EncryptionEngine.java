@@ -1,18 +1,27 @@
 package aiss.main;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PublicKey;
+import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
 
 import aiss.tss.client.TSSClient;
 
 import com.sun.xml.internal.ws.api.message.Message;
 
+import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 import sun.security.pkcs11.wrapper.PKCS11Exception;
 
@@ -46,8 +55,7 @@ public class EncryptionEngine implements Engine{
 	public void run() {
 		debug("Engine Run");
 		String contentsBase64 = "";
-		String signatureBase64First = ""; 	//SHA_256
-		String signatureBase64Second = "";	//RIPMD_160
+		String signatureBase64 = "";
 		String certBase64 = "";
 		String timeStampSignBase64 = "";
 
@@ -55,6 +63,7 @@ public class EncryptionEngine implements Engine{
 		BASE64Encoder base64encoder = new BASE64Encoder();
 
 		byte[] fileByteContent = fm.getFolderContentInZipByteArray();
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
 		debug("ZIP ByteArray Size is: "+ fileByteContent.length);
 
@@ -68,14 +77,34 @@ public class EncryptionEngine implements Engine{
 
 			try {
 				certBase64 = base64encoder.encode(aiss.ccauthentication.Signature.obtainCert());
-				byte[][] signatures = aiss.ccauthentication.Signature.createSignature(fileByteContent);
-				signatureBase64First = base64encoder.encode(signatures[0]);
-				signatureBase64Second = base64encoder.encode(signatures[1]);
+				
+				//first hash/digest
+				MessageDigest md1 = MessageDigest.getInstance("SHA-256");
+				md1.update(fileByteContent);
+				byte[] mdigest1 = md1.digest();
+				
+				//second hash/digest
+				MessageDigest md2 = MessageDigest.getInstance("RIPEMD160","BC");
+				md2.update(fileByteContent);
+				byte[] mdigest2 = md2.digest();
+				
+				byte[] mdigestTotal = new byte[mdigest1.length + mdigest2.length];
+				System.arraycopy(mdigest1,0,mdigestTotal,0,mdigest1.length);
+				System.arraycopy(mdigest2,0,mdigestTotal,mdigest1.length,mdigest2.length);
+				
+				signatureBase64 = base64encoder.encode(aiss.ccauthentication.Signature.createSignature(mdigestTotal));
+
 			} catch (PKCS11Exception e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (InvalidKeySpecException e) {
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchProviderException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -107,8 +136,7 @@ public class EncryptionEngine implements Engine{
 		contentsBase64 = base64encoder.encode(fileByteContent);
 
 		// Escrever o conteudo para um ficheiro XML
-		fm.writeXML(operations, contentsBase64, certBase64, signatureBase64First,
-				signatureBase64Second,timeStampSignBase64);
+		fm.writeXML(operations, contentsBase64, certBase64, signatureBase64,timeStampSignBase64);
 	}
 
 	private static void debug(String log){
