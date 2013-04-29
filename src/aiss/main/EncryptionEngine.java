@@ -17,6 +17,7 @@ import javax.crypto.Cipher;
 import javax.security.cert.CertificateException;
 import javax.security.cert.X509Certificate;
 
+import aiss.aesJava.MyAES;
 import aiss.tss.client.TSSClient;
 
 import com.sun.xml.internal.ws.api.message.Message;
@@ -65,60 +66,39 @@ public class EncryptionEngine implements Engine{
 		byte[] fileByteContent = fm.getFolderContentInZipByteArray();
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-		debug("ZIP ByteArray Size is: "+ fileByteContent.length);
-
 		// If no file Found return 
 		if(fileByteContent == null){
 			return;
 		}
+
+		debug("ZIP ByteArray Size is: "+ fileByteContent.length);
 
 		if(authentication){
 			debug("Engine Authentication Service");
 
 			try {
 				certBase64 = base64encoder.encode(aiss.ccauthentication.Signature.obtainCert());
-				
+
 				//first hash/digest
 				MessageDigest md1 = MessageDigest.getInstance("SHA-256");
 				md1.update(fileByteContent);
 				byte[] mdigest1 = md1.digest();
-				
+
 				//second hash/digest
 				MessageDigest md2 = MessageDigest.getInstance("RIPEMD160","BC");
 				md2.update(fileByteContent);
 				byte[] mdigest2 = md2.digest();
-				
+
 				byte[] mdigestTotal = new byte[mdigest1.length + mdigest2.length];
 				System.arraycopy(mdigest1,0,mdigestTotal,0,mdigest1.length);
 				System.arraycopy(mdigest2,0,mdigestTotal,mdigest1.length,mdigest2.length);
-				
+
 				signatureBase64 = base64encoder.encode(aiss.ccauthentication.Signature.createSignature(mdigestTotal));
 
-			} catch (PKCS11Exception e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InvalidKeySpecException e) {
-				e.printStackTrace();
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NoSuchProviderException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
-
-		if(confidentiality){
-			debug("Engine Confidentiality Service");
-
-			// TODO Chamar invocaca7o para cifrar o conteudo
-			// CipherHandeler ch = new CipherHandeler("AES...");
-			//fileByteContent = ch.encrypt(fileByteContent);
-		}
-
-
 
 		if(timestamping){
 			debug("Engine TimeStamping Service");
@@ -126,11 +106,19 @@ public class EncryptionEngine implements Engine{
 			BASE64Encoder encoder = new BASE64Encoder();
 			byte[] textHash = TSSClient.byteDigestSHA256(fileByteContent);
 			debug("Text SHA-256 Hash: " + encoder.encode(textHash));
-			
+
 			byte[] timeStamp = TSSClient.generateTimeStamp(textHash);
 			timeStampSignBase64 = encoder.encode(timeStamp);
 		}
 
+		if(confidentiality){
+			debug("Engine Confidentiality Service");
+
+			// BACKUP MODE
+			MyAES aes = new MyAES();
+			fileByteContent = aes.CipherAll(MyAES.ENCRYPT, "AES_KEY_256.key", MyAES.CBC, fileByteContent);
+			
+		}
 
 		// Passar o conteudo para Base64
 		contentsBase64 = base64encoder.encode(fileByteContent);

@@ -11,6 +11,8 @@ import javax.security.cert.X509Certificate;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.w3c.dom.Document;
 import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+import aiss.aesJava.MyAES;
 import aiss.tss.client.TSSClient;
 
 
@@ -25,6 +27,7 @@ public class DecryptionEngine implements Engine{
 
 		FileManager fm = new FileManager();
 		BASE64Decoder base64decoder = new BASE64Decoder();
+		BASE64Encoder base64encoder = new BASE64Encoder();
 		Document xml = fm.readEncryptedXml();
 		byte[] zipBytes = null;
 		boolean verified = false;
@@ -58,7 +61,18 @@ public class DecryptionEngine implements Engine{
 			System.out.println("Should not Happen");
 			return;
 		}
+		
+		
+		if (operationsTAG.contains("C")){
+			debug("Engine Confidentiality Service");
 
+			// BACKUP MODE
+			MyAES aes = new MyAES();
+			zipBytes = aes.CipherAll(MyAES.DECRYPT, "AES_KEY_256.key", MyAES.CBC, zipBytes);
+
+		}
+		
+		// Save files from zip to the folder
 		fm.saveFilesFromZipByteArray(zipBytes);
 
 		if(operationsTAG.contains("A")){
@@ -114,9 +128,7 @@ public class DecryptionEngine implements Engine{
 			}
 		} 
 
-		if (operationsTAG.contains("C")){
-			//TODO Stuff
-		} 
+		
 
 		if (operationsTAG.contains("T")){
 			debug("Engine TimeStamping Service");
