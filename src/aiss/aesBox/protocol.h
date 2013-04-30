@@ -16,13 +16,16 @@
 
 
 #define AES_BLOCK_SIZE 32 /* 256 bit AES */
-#define MIN_BLOCK_NUM  20 /* 640 byte  : minimum length of outgoing packet */
-#define MAX_BLOCK_NUM  44//44 /* 1408 byte : maximum length of outgoing packet*/
+#define MIN_BLOCK_NUM  1 /* 640 byte  : minimum length of outgoing packet */
+//#define MIN_BLOCK_NUM  20 /* 640 byte  : minimum length of outgoing packet */
+//#define MAX_BLOCK_NUM  44//44 /* 1408 byte : maximum length of outgoing packet*/
+#define MAX_BLOCK_NUM  2//44 /* 1408 byte : maximum length of outgoing packet*/
+
 
 #define MIN_PACKET_DATA (MIN_BLOCK_NUM*AES_BLOCK_SIZE)
 #define MAX_PACKET_DATA (MAX_BLOCK_NUM*AES_BLOCK_SIZE) /* 1514 - 4 (packet_t header) - 42 (ip/udp header) */
 #define MAX_PACKET_RAW_DATA (PACKET_HEADER_SIZE+MAX_PACKET_DATA+AES_BLOCK_SIZE)
-#define MAX_DATA_IN  (MAX_PACKET_DATA*50)
+#define MAX_DATA_IN  MAX_PACKET_DATA//(*50)
 #define MAX_DATA_OUT (MAX_DATA_IN + AES_BLOCK_SIZE)
 
 #define ENDIANNESS LITTLE_ENDIAN

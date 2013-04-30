@@ -12,38 +12,51 @@ char init(u32 mode){
 
 char update(u8 * data_in, u32 size, u8 * data_out,u32 * size_out){
 
-	//printf("Size %i", size);
-	//printf("Array is: %s\n", data_in);
-	u32 a = 0;
+	u8 data_temp[size];
 
-	printf("UPDATE------------>>>>> from %d until %d \n", a, size);
+	memcpy(data_temp,data_in,size);
 
-	for(a=0; a < size; a++){
-		printf("%d%c \n", a,data_in[a]);
+	u32 i;
+	for(i = 0; i < size; i++){
+		//data_temp[i] ^= '1';
+		//data_temp[i] ^= '1';
 	}
-	//printf("UPDATE------------>>>>>:%s\n", data_in);
+
+	memcpy(data_out,data_temp,size);
+	*size_out = size;
 
 	return 'c';
 }
 
-char doFinal(u8 * data_in, u32 size,u8 * data_out,u32 *size_out){
+char doFinal(u8 * data_in, u32 size,u8 * data_out, u32 *size_out){
 
-	//printf("Size %i", size);
-	//printf("Array is: %s\n", data_in);
-	u32 a = 0;
 
-	printf("UPDATE------------>>>>> from %d until %d \n", a, size);
+	u8 data_temp[size];
 
-	for(a=0; a < size; a++){
-		printf("%c",data_in[a]);
-		data_out[a] = data_in[a];
+	memcpy(data_temp,data_in,size);
+
+	u32 i;
+	for(i = 0; i < size; i++){
+		//data_temp[i] ^= '1';
+		//data_temp[i] ^= '1';
 	}
-	printf("\n");
+
+	memcpy(data_out,data_temp,size);
+	*size_out = size;
+
+	//printf("\nDoFinalIN------------>>>>> from %d until %d \n", a, size);
+	//printf("%s",data_in);
+	//printf("\nDoFinalIN------------>>>>>\n");
+
+
+	//printf("\nDoFinalOUT------------>>>>> from %d until %d \n", a, size);
+	//printf("%s",data_out);
+	//printf("\nDoFinalOUT------------>>>>>\n");
+
+	//printf("\n");
 	//memcpy(data_out,&data_in,size);
-	size_out = (u32*) a;
-	printf("size_out: %u\n", size_out);
-	printf("\n");
-	printf("Done------------>>>>>\n");
 
 	return 'c';
 }
+
+
