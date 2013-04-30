@@ -1,7 +1,9 @@
 ############################# Makefile ##########################
 CC = g++
-CFLAGS = -Wall -fPIC -I "/usr/lib/jvm/java-8-oracle/include/" -I "/usr/lib/jvm/java-8-oracle/include/linux/" -shared
+JAVAPATH = /usr/lib/jvm/java-6-openjdk/
+CFLAGS = -Wall -fPIC -I ${JAVAPATH}include/ -I ${JAVAPATH}include/linux/ -shared
 LDFLAGS =
+
 
 all: AESboxJNI.o protocol.o
 	${CC} ${CFLAGS} AESboxJNI.o protocol.o ${LDFLAGS} -o libaesbox.so

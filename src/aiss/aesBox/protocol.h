@@ -42,7 +42,7 @@
 #define KeyInMessageSIZE 4 //in bytes
 
 /* flag mode constants*/
-#define EBC_FLAG 	 0x00000000
+#define ECB_FLAG 	 0x00000000
 #define CBC_FLAG 	 0x00000200
 #define FIRST_FLAG 	 0x00000400
 

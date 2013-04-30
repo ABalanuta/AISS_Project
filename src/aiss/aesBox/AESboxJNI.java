@@ -19,19 +19,18 @@ public class AESboxJNI {
 	public static void main(String[] args) {
 		AESboxJNI box = new AESboxJNI();
 
-		byte[] plainText = "Isto é um Teste".getBytes();
+		byte[] plainText = new byte[1600*50*2];
 		byte[] encText = null;
 		byte[] plainText2 = null;
 
-		System.out.println("plainText IN:"+(new String(plainText)));
+		//System.out.println("plainText IN:"+(new String(plainText)));
 		encText = box.Encrypt(plainText);
-		System.out.println("plainText OUT:"+(new String(plainText)));
 		
 		
-		System.out.println("encText:"+(new String(encText)));
+		//System.out.println("encText:"+(new String(encText)));
 		plainText2 = box.Decrypt(encText);
 		
-		System.out.println("plainText2:"+(new String(plainText2)));
+	//	System.out.println("plainText2:"+(new String(plainText2)));
 	}
 
 }
