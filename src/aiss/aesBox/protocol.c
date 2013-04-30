@@ -18,7 +18,7 @@ char update(u8 * data_in, u32 size, u8 * data_out,u32 * size_out){
 
 	u32 i;
 	for(i = 0; i < size; i++){
-		//data_temp[i] ^= '1';
+		data_temp[i] ^= '1';
 		//data_temp[i] ^= '1';
 	}
 
@@ -37,24 +37,12 @@ char doFinal(u8 * data_in, u32 size,u8 * data_out, u32 *size_out){
 
 	u32 i;
 	for(i = 0; i < size; i++){
-		//data_temp[i] ^= '1';
+		data_temp[i] ^= '1';
 		//data_temp[i] ^= '1';
 	}
 
 	memcpy(data_out,data_temp,size);
 	*size_out = size;
-
-	//printf("\nDoFinalIN------------>>>>> from %d until %d \n", a, size);
-	//printf("%s",data_in);
-	//printf("\nDoFinalIN------------>>>>>\n");
-
-
-	//printf("\nDoFinalOUT------------>>>>> from %d until %d \n", a, size);
-	//printf("%s",data_out);
-	//printf("\nDoFinalOUT------------>>>>>\n");
-
-	//printf("\n");
-	//memcpy(data_out,&data_in,size);
 
 	return 'c';
 }

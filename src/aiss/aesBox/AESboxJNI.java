@@ -23,15 +23,12 @@ public class AESboxJNI {
 		byte[] encText;
 		byte[] plainText2 = null;
 
-		System.out.println("plainText IN:"+(new String(plainText)));
+		System.out.println("plainText IN: "+(new String(plainText)));
 		encText = box.Encrypt(plainText);
-
-		System.out.println(new String(encText));
-
-//		System.out.println("encText:"+(new String(encText)));
-//		plainText2 = box.Decrypt(encText);
-//
-//		System.out.println("plainText2:"+(new String(plainText2)));
+		System.out.println("encText: "+(new String(encText)));
+		
+		plainText2 = box.Decrypt(encText);
+		System.out.println("plainText2: "+(new String(plainText2)));
 	}
 
 }
