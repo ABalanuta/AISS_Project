@@ -1,4 +1,3 @@
-#include <jni.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,16 +17,9 @@ JNIEXPORT jbyteArray JNICALL Java_AESboxJNI_Encrypt(JNIEnv *env, jobject obj, jb
 
 	// In Array
 	jbyte *inArr = env->GetByteArrayElements(array, NULL);
-	jbyteArray cenas = (jbyteArray)env->GetByteArrayElements(array, NULL);
 	jsize lengthOfArray = env->GetArrayLength(array);
-
-
-
-
 	// Out Array
-	jbyteArray outArr = env->NewByteArray(0);
-
-
+	jbyteArray outArr;
 
 	u32 fullPackets = lengthOfArray/MAX_DATA_IN;
 	u32 remainBytes = lengthOfArray - (fullPackets * MAX_DATA_IN);
@@ -36,17 +28,7 @@ JNIEXPORT jbyteArray JNICALL Java_AESboxJNI_Encrypt(JNIEnv *env, jobject obj, jb
 	printf("Number of fullPackets:%u\n", fullPackets);
 	printf("Number of remainBytes:%u\n", remainBytes);
 
-	printf("before------------>>>>>\n");
 	u32 a = 0;
-
-	printf("UPDATE------------>>>>> from %d until %d \n", a, lengthOfArray);
-
-	for(a=0; a < (u32)lengthOfArray; a++){
-	//	printf("%d%c\n", a,(char)cenas[a]);
-	}
-	printf("before------------>>>>>\n");
-
-	return cenas;
 
 	u8 buffer_in[MAX_DATA_IN];
 	u8 buffer_out[MAX_DATA_OUT];
@@ -64,23 +46,37 @@ JNIEXPORT jbyteArray JNICALL Java_AESboxJNI_Encrypt(JNIEnv *env, jobject obj, jb
 			//cipther
 			update(buffer_in, MAX_DATA_IN, buffer_out, &returnSize);
 			// todo pensar
-
 		}
-
-
 	}
 
-	// Senáo fazemos doFinal
+	// Senao fazemos doFinal
 	else{
-
 		// copy to buff
 		memcpy(&buffer_in, inArr, lengthOfArray);
 
 		//cipther
 		doFinal(buffer_in, lengthOfArray, buffer_out, &returnSize);
 
+
+	//!! Olha, faz sentido n estarmos a receber nada -> n mexemos em nada do buffer_out e tb do returnSize
+
+		// Out Array
+		
 		//memcpy(outArr,"string qualquer",returnSize);
-		env->SetByteArrayRegion(outArr, 0, returnSize , (jbyte*) buffer_out);
+		//void SetByteArrayRegion(JNIEnv *env, jbyteArray array, jsize start, jsize len, jbyte *buf);
+
+		outArr = env->NewByteArray((jsize) returnSize);
+		jsize start = (jsize) 0;
+		jsize len = (jsize) returnSize;
+		jbyte *buf = (jbyte*) buffer_out;
+		printf("len: %u\n",len);
+		env->SetByteArrayRegion(outArr, start, len , buf);
+		//jsize lengthOfArray1 = env->GetArrayLength(sizeof(buf));
+		
+		for(a=0; a < (u32) len; a++){
+			//printf("%u", lengthOfArray1);
+			printf("%u%c", a, outArr[a]);
+		}
 		//return outArr;
 
 	}
@@ -100,8 +96,8 @@ JNIEXPORT jbyteArray JNICALL Java_AESboxJNI_Encrypt(JNIEnv *env, jobject obj, jb
 
 	//printf("\nInit Response is :%i\n", init(a));
 
-	// release Array
-	//(*env)->ReleaseByteArrayElements(env, array, bufferPtr, 0);
+	//release Array
+	//env->ReleaseByteArrayElements(array, 0, 0);
 
 	return outArr;
 }

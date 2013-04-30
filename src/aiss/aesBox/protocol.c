@@ -10,7 +10,7 @@ char init(u32 mode){
 	return 'c';
 }
 
-char	update(u8 * data_in, u32 size, u8 * data_out,u32 * size_out){
+char update(u8 * data_in, u32 size, u8 * data_out,u32 * size_out){
 
 	//printf("Size %i", size);
 	//printf("Array is: %s\n", data_in);
@@ -19,14 +19,14 @@ char	update(u8 * data_in, u32 size, u8 * data_out,u32 * size_out){
 	printf("UPDATE------------>>>>> from %d until %d \n", a, size);
 
 	for(a=0; a < size; a++){
-		printf("%d%c\n", a,data_in[a]);
+		printf("%d%c \n", a,data_in[a]);
 	}
 	//printf("UPDATE------------>>>>>:%s\n", data_in);
 
 	return 'c';
 }
 
-char  doFinal(u8 * data_in, u32 size,u8 * data_out,u32 *size_out){
+char doFinal(u8 * data_in, u32 size,u8 * data_out,u32 *size_out){
 
 	//printf("Size %i", size);
 	//printf("Array is: %s\n", data_in);
@@ -35,9 +35,15 @@ char  doFinal(u8 * data_in, u32 size,u8 * data_out,u32 *size_out){
 	printf("UPDATE------------>>>>> from %d until %d \n", a, size);
 
 	for(a=0; a < size; a++){
-		printf("%d%c\n", a,data_in[a]);
+		printf("%c",data_in[a]);
+		data_out[a] = data_in[a];
 	}
-	//printf("UPDATE------------>>>>>:%s\n", data_in);
+	printf("\n");
+	//memcpy(data_out,&data_in,size);
+	size_out = (u32*) a;
+	printf("size_out: %u\n", size_out);
+	printf("\n");
+	printf("Done------------>>>>>\n");
 
 	return 'c';
 }
