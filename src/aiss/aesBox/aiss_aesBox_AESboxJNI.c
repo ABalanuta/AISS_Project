@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "AESboxJNI.h"
+#include "aiss_aesBox_AESboxJNI.h"
 #include "protocol.h"
 
 #define ENC_MODE 'c'
 #define DEC_MODE 'd'
 
-JNIEXPORT jbyteArray JNICALL Java_AESboxJNI_Encrypt(JNIEnv *env, jobject obj, jbyteArray array){
+JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Encrypt(JNIEnv *env, jobject obj, jbyteArray array){
 
 	u32 mode = ROUNDS_10 | ECB_FLAG |FIRST_FLAG| ENCRYPT_FLAG;
 
@@ -97,7 +97,7 @@ JNIEXPORT jbyteArray JNICALL Java_AESboxJNI_Encrypt(JNIEnv *env, jobject obj, jb
  * Method:    Decrypt
  * Signature: ([B)[B
  */
-JNIEXPORT jbyteArray JNICALL Java_AESboxJNI_Decrypt(JNIEnv *env, jobject obj, jbyteArray array){
+JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Decrypt(JNIEnv *env, jobject obj, jbyteArray array){
 
 	u32 mode = ROUNDS_10 | ECB_FLAG |FIRST_FLAG| DECRYPT_FLAG;
 

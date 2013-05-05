@@ -5,3 +5,6 @@
 *.class
 /bin
 /in
+*.*~
+*.o
+*.log
