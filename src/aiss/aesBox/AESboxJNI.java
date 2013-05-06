@@ -1,6 +1,7 @@
 package aiss.aesBox;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class AESboxJNI {
 
@@ -48,20 +49,28 @@ public class AESboxJNI {
 	public static void main(String[] args) {
 		AESboxJNI box = new AESboxJNI();
 
-		//byte[] plainText = new byte[1600*50*2];
-		byte[] plainText = ("Isto e uma frase muito nice e quero desejar feliz natal ").getBytes();
-//							"e boa pascoa e bom ano novo a todos os meus amigos, mas como" +
-//							" esta frase esta Cifrada com AES ninguem vai Decobrir. Feliz" +
-//							" Natal a todos. :) ").getBytes();
-		byte[] encText;
-		byte[] plainText2 = null;
+		//Teste Exaustivo no caso sem padding
+		for(int i = 1; i<25000; i++){
+			byte[] plainText = String.format("%"+i+"s", "").replace(' ', 'W').getBytes();
+			byte[] encText = box.Encrypt(plainText);
 
-		System.out.println("plainText IN: "+(new String(plainText)));
-		encText = box.Encrypt(plainText);
-		System.out.println("encText: "+(new String(encText)));
+			// remover para testar com pading
+			if(encText.length != plainText.length){
+				System.out.println("Error: lenght dont mach at " + i);
+				break;
+			}
 
-		plainText2 = box.Decrypt(encText);
-		System.out.println("plainText2: "+(new String(plainText2)));
+			byte[] plainText2 = box.Decrypt(encText);
+			if(!Arrays.equals(plainText,plainText2)){
+				System.out.println("Error: Enc/Dec dont mach at " + i);
+				System.out.println(":"+plainText2 + ":" + plainText+":");
+				break;
+			}
+
+			if(i%1000 == 0){
+				System.out.print(i+" ");
+			}
+		}
 	}
 
 }
