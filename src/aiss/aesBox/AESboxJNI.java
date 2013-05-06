@@ -12,6 +12,9 @@ public class AESboxJNI {
 		String libDir = new File("").getAbsolutePath() + "/";
 
 		//Fora do Eclipse (Jar)
+		if(osName.contains("Mac")){
+			libName = "libaesbox.jnilib";
+		}
 		try{			
 			System.load(libDir+libName);
 			// Dentro do Eclipse
@@ -56,13 +59,13 @@ public class AESboxJNI {
 
 			// remover para testar com pading
 			if(encText.length != plainText.length){
-				System.out.println("Error: lenght dont mach at " + i);
+				System.out.println("Error: length dont match at " + i);
 				break;
 			}
 
 			byte[] plainText2 = box.Decrypt(encText);
 			if(!Arrays.equals(plainText,plainText2)){
-				System.out.println("Error: Enc/Dec dont mach at " + i);
+				System.out.println("Error: Enc/Dec dont match at " + i);
 				System.out.println(":"+plainText2 + ":" + plainText+":");
 				break;
 			}

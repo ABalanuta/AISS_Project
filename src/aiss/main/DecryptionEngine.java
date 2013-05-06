@@ -12,6 +12,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.w3c.dom.Document;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
+import aiss.aesBox.AESboxJNI;
 import aiss.aesJava.MyAES;
 import aiss.tss.client.TSSClient;
 
@@ -19,6 +20,7 @@ import aiss.tss.client.TSSClient;
 public class DecryptionEngine implements Engine{
 
 	private static final boolean DEBUG = true;
+	private static final boolean AES_BOX_PRESENT = true;
 
 	@Override
 	public void run() {
@@ -65,14 +67,8 @@ public class DecryptionEngine implements Engine{
 		// Se a messagem foi cifrada vamos descifra-la
 		if (operationsTAG.contains("C")){
 			debug("Engine Confidentiality Service");
-
-			// BACKUP MODE
-			MyAES aes = new MyAES();
-			zipBytes = aes.CipherAll(MyAES.DECRYPT, "AES_KEY_256.key", MyAES.CBC, zipBytes);
 			
-			logToClient += "-----Conf<br>\n";
-			logToClient += "Cifrado com AES<br>\n";
-			logToClient += "-----<br>\n";
+			zipBytes = Cipher(zipBytes);
 
 		}
 		
@@ -140,6 +136,7 @@ public class DecryptionEngine implements Engine{
 			byte[] signedTimeStamp = null;
 			try {
 				signedTimeStamp = base64decoder.decodeBuffer(timeStampSignBase64);
+				signedTimeStamp = Cipher(signedTimeStamp);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -170,6 +167,20 @@ public class DecryptionEngine implements Engine{
 
 		}catch(NullPointerException e){
 			return null;
+		}
+	}
+	
+	private byte[] Cipher(byte[] content){
+		
+		if(AES_BOX_PRESENT){
+			debug("Using HARDWARE for AES Encryption");
+			AESboxJNI aes = new AESboxJNI();
+			return aes.CipherAll(AESboxJNI.DECRYPT, content);
+		}else{
+			debug("Using JAVA for AES Encryption");
+			// BACKUP MODE
+			MyAES aes = new MyAES();
+			return aes.CipherAll(MyAES.DECRYPT, "AES_KEY_256.key", MyAES.CBC, content);
 		}
 	}
 

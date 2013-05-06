@@ -124,10 +124,10 @@ public class EncryptionEngine implements Engine{
 			
 			fileByteContent = Cipher(fileByteContent);
 			
-			if(authentication){
-				cert = Cipher(cert);
-				signature = Cipher(signature);
-			}
+//			if(authentication){
+//				cert = Cipher(cert);
+//				signature = Cipher(signature);
+//			}
 			
 			if(timestamping){
 				timeStamp = Cipher(timeStamp);
