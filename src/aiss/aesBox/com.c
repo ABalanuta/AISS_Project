@@ -1,3 +1,4 @@
+#include "protocol.h"
 #include "com.h"
 #include <stdlib.h>     /* for exit() */
 #include <string.h>
@@ -6,7 +7,7 @@
 #include <sys/socket.h> /* for socket(),... */
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include "protocol.h"
+
 
 static int fd;
 static struct sockaddr_in servaddr,cliaddr,SenderAddr;
@@ -55,8 +56,8 @@ int recvPacket(u8 *buf, u32 size)
 	int n;
 
 	n = recvfrom(fd,(char*) buf,size, 0, (struct sockaddr *)& SenderAddr, &SenderAddrSize);
-	if(n==-1)
+	if(n == -1)
 		printf("recvfrom error");
-	n=  recvfrom(fd,(char*) buf,size, 0, (struct sockaddr *)& SenderAddr, &SenderAddrSize);
+	n =  recvfrom(fd,(char*) buf,size, 0, (struct sockaddr *)& SenderAddr, &SenderAddrSize);
 	return n;
 }

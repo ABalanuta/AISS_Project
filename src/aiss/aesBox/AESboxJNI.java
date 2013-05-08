@@ -53,25 +53,27 @@ public class AESboxJNI {
 		AESboxJNI box = new AESboxJNI();
 
 		//Teste Exaustivo no caso sem padding
-		for(int i = 1; i<25000; i++){
+		for(long i = 1; i<5000000; i += 1){
 			byte[] plainText = String.format("%"+i+"s", "").replace(' ', 'W').getBytes();
 			byte[] encText = box.Encrypt(plainText);
 
 			// remover para testar com pading
-			if(encText.length != plainText.length){
-				System.out.println("Error: length dont match at " + i);
-				break;
-			}
+			//if(encText.length != plainText.length){
+			//	System.out.println("Error: length dont match at " + i);
+			//	break;
+			//}
 
 			byte[] plainText2 = box.Decrypt(encText);
+			
+			
 			if(!Arrays.equals(plainText,plainText2)){
 				System.out.println("Error: Enc/Dec dont match at " + i);
 				System.out.println(":"+plainText2 + ":" + plainText+":");
 				break;
 			}
 
-			if(i%1000 == 0){
-				System.out.print(i+" ");
+			if(i%50 == 0){
+				System.out.println(i+" ");
 			}
 		}
 	}

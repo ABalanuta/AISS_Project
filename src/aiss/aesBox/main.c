@@ -113,7 +113,7 @@ int main(int argc, char*argv[])
 						fwrite(buffer_out,1,n,fp_w);
 					}
 
-					if(doFinal(buffer_out,&n) == ERROR_CODE)
+					if(doFinal2(buffer_out,&n) == ERROR_CODE)
 						{
 							printf("\n Error : Update() \n");
 							return -1;
