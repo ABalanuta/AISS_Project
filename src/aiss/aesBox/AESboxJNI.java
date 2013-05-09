@@ -53,7 +53,7 @@ public class AESboxJNI {
 		AESboxJNI box = new AESboxJNI();
 
 		//Teste Exaustivo no caso sem padding
-		for(long i = 1; i<5000000; i += 1){
+		for(long i = 1; i<10000; i += 1){
 			byte[] plainText = String.format("%"+i+"s", "").replace(' ', 'W').getBytes();
 			byte[] encText = box.Encrypt(plainText);
 

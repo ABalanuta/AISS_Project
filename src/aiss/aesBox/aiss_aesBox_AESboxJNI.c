@@ -22,8 +22,9 @@ JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Encrypt(JNIEnv *env, job
 	//Variaveis
 	u32 fullPackets = lengthOfArray/MAX_DATA_IN;
 	u32 remainBytes = lengthOfArray%MAX_DATA_IN;
-	u8 buffer_out[MAX_DATA_OUT];
-	u8 buffer_temp[lengthOfArray+AES_BLOCK_SIZE]; //Tamanho maximo do pacote a retornar
+	u8 *buffer_out;
+	buffer_out = malloc((MAX_DATA_IN*AES_BLOCK_SIZE)*sizeof(u8));
+	u8 *buffer_temp;
 	u32 i, returnSize, totalSize = 0;
 	jbyteArray outArray;
 
@@ -33,25 +34,42 @@ JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Encrypt(JNIEnv *env, job
 	//printf("Number of fullPackets:%u\n", fullPackets);
 	//printf("Number of remainBytes:%u\n", remainBytes);
 
+	if (buffer_out==NULL) {
+		printf("Error allocating memory!\n"); //print an error message
+		return 1; //return with failure
+	}
 
 	// Se tiveremos mais que MAX_DATA_IN dividimos os dados
 	// em pedacos do tamanho MAX_DATA_IN fazendo update() a cada um
 	// fazemos doFinal aos remanescentes dados
 	if(fullPackets > 0){
 		for(i = 0; i < fullPackets; i++){
-
 			//cipher
 			update(&inArr[i * MAX_DATA_IN], MAX_DATA_IN, buffer_out, &returnSize);
-			buffer_temp = (u8) malloc(sizeof(u8 * returnSize));
-			buffer_temp = buffer_out;
+			buffer_temp = realloc(buffer_out,returnSize*sizeof(u8));
+			if ( buffer_temp != NULL ) //realloc was successful
+			{
+				buffer_out = buffer_temp;
+			}
+			else //there was an error
+			{
+				free(buffer_out);
+			}
 			//memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
 			totalSize += returnSize;
 		}
 
 		//Cifrar o ultimo Pacote
 		doFinal(&inArr[fullPackets * MAX_DATA_IN], remainBytes, buffer_out, &returnSize);
-		buffer_temp = (u8) malloc(sizeof(u8 * returnSize));
-		buffer_temp = buffer_out;
+		buffer_temp = realloc(buffer_out,returnSize*sizeof(u8));
+		if ( buffer_temp != NULL ) //realloc was successful
+		{
+			buffer_out = buffer_temp;
+		}
+		else //there was an error
+		{
+			free(buffer_out);
+		}
 		//memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
 		totalSize += returnSize;
 
@@ -65,7 +83,7 @@ JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Encrypt(JNIEnv *env, job
 	}else{
 
 		//cipher
-		doFinal(&inArr, lengthOfArray, buffer_out, &returnSize);
+		doFinal(inArr, lengthOfArray, buffer_out, &returnSize);
 
 		//Criar array de retorno
 		outArray = env->NewByteArray((jsize) returnSize);
@@ -105,8 +123,9 @@ JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Decrypt(JNIEnv *env, job
 	//Variaveis
 	u32 fullPackets = lengthOfArray/MAX_DATA_IN;
 	u32 remainBytes = lengthOfArray%MAX_DATA_IN;
-	u8 buffer_out[MAX_DATA_OUT];
-	u8 buffer_temp[lengthOfArray+AES_BLOCK_SIZE]; //Tamanho maximo do pacote a retornar
+	u8 *buffer_out;
+	buffer_out = malloc((MAX_DATA_OUT*AES_BLOCK_SIZE)*sizeof(u8));
+	u8 *buffer_temp; //Tamanho maximo do pacote a retornar
 	u32 i, returnSize, totalSize = 0;
 	jbyteArray outArray;
 
@@ -124,8 +143,15 @@ JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Decrypt(JNIEnv *env, job
 
 			//cipher
 			update(&inArr[i * MAX_DATA_IN], MAX_DATA_IN, buffer_out, &returnSize);
-			buffer_temp = (u8) malloc(sizeof(u8 * returnSize));
-			buffer_temp = buffer_out;
+			buffer_temp = realloc(buffer_out,returnSize*sizeof(u8));
+			if ( buffer_temp != NULL ) //realloc was successful
+			{
+				buffer_out = buffer_temp;
+			}
+			else //there was an error
+			{
+				free(buffer_out);
+			}
 			//memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
 			totalSize += returnSize;
 
@@ -133,8 +159,15 @@ JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Decrypt(JNIEnv *env, job
 
 		//Cifrar o ultimo Pacote
 		doFinal(&inArr[fullPackets * MAX_DATA_IN], remainBytes, buffer_out, &returnSize);
-		buffer_temp = (u8) malloc(sizeof(u8 * returnSize));
-		buffer_temp = buffer_out;
+		buffer_temp = realloc(buffer_out,returnSize*sizeof(u8));
+		if ( buffer_temp != NULL ) //realloc was successful
+		{
+			buffer_out = buffer_temp;
+		}
+		else //there was an error
+		{
+			free(buffer_out);
+		}
 		//memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
 		totalSize += returnSize;
 
