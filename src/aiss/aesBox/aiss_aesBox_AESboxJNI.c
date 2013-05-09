@@ -35,20 +35,24 @@ JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Encrypt(JNIEnv *env, job
 
 
 	// Se tiveremos mais que MAX_DATA_IN dividimos os dados
-	// em pedaços do tamanho MAX_DATA_IN fazendo update() a cada um
+	// em pedacos do tamanho MAX_DATA_IN fazendo update() a cada um
 	// fazemos doFinal aos remanescentes dados
 	if(fullPackets > 0){
 		for(i = 0; i < fullPackets; i++){
 
 			//cipher
 			update(&inArr[i * MAX_DATA_IN], MAX_DATA_IN, buffer_out, &returnSize);
-			memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
+			buffer_temp = (u8) malloc(sizeof(u8 * returnSize));
+			buffer_temp = buffer_out;
+			//memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
 			totalSize += returnSize;
 		}
 
 		//Cifrar o ultimo Pacote
 		doFinal(&inArr[fullPackets * MAX_DATA_IN], remainBytes, buffer_out, &returnSize);
-		memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
+		buffer_temp = (u8) malloc(sizeof(u8 * returnSize));
+		buffer_temp = buffer_out;
+		//memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
 		totalSize += returnSize;
 
 		//Criar array de retorno
@@ -61,7 +65,7 @@ JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Encrypt(JNIEnv *env, job
 	}else{
 
 		//cipher
-		doFinal(inArr, lengthOfArray, buffer_out, &returnSize);
+		doFinal(&inArr, lengthOfArray, buffer_out, &returnSize);
 
 		//Criar array de retorno
 		outArray = env->NewByteArray((jsize) returnSize);
@@ -113,21 +117,25 @@ JNIEXPORT jbyteArray JNICALL Java_aiss_aesBox_AESboxJNI_Decrypt(JNIEnv *env, job
 	//printf("Number of remainBytes:%u\n", remainBytes);
 
 	// Se tiveremos mais que MAX_DATA_IN dividimos os dados
-	// em pedaços do tamanho MAX_DATA_IN fazendo update() a cada um
+	// em pedacos do tamanho MAX_DATA_IN fazendo update() a cada um
 	// fazemos doFinal aos remanescentes dados
 	if(fullPackets > 0){
 		for(i = 0; i < fullPackets; i++){
 
 			//cipher
 			update(&inArr[i * MAX_DATA_IN], MAX_DATA_IN, buffer_out, &returnSize);
-			memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
+			buffer_temp = (u8) malloc(sizeof(u8 * returnSize));
+			buffer_temp = buffer_out;
+			//memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
 			totalSize += returnSize;
 
 		}
 
 		//Cifrar o ultimo Pacote
 		doFinal(&inArr[fullPackets * MAX_DATA_IN], remainBytes, buffer_out, &returnSize);
-		memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
+		buffer_temp = (u8) malloc(sizeof(u8 * returnSize));
+		buffer_temp = buffer_out;
+		//memcpy(&buffer_temp[totalSize], buffer_out, returnSize);
 		totalSize += returnSize;
 
 		//Cria Array de Retorno

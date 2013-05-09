@@ -4,10 +4,10 @@
 	<classpathentry exported="true" kind="lib" path="libs/bcpkix-jdk15on-148.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/bcprov-jdk15on-148.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/pteidlibj.jar"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/.java7_from_oracle"/>
 	<classpathentry exported="true" kind="lib" path="libs/zt-zip-1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-api-1.7.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-simple-1.7.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-io-2.4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
