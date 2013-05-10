@@ -13,7 +13,7 @@ all: ${FILENAME}.o protocol.o com.o
 	${CC} ${CFLAGS} ${FILENAME}.o protocol.o com.o ${LDFLAGS} -o libaesbox.so
 clean:
 	rm *.o
-#	rm *.so
+	rm *.so
 endif
 
 ifeq (${UNAME}, Darwin)
