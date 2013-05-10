@@ -11,18 +11,33 @@ public class AESecure {
 
 	public static void main(String args[]){
 	
-		if(args.length != 1){
+		if(args.length != 2){
 			System.out.println("Invalid number of Arguments");
 			return;
 		}
 
 		try{
 			mode = Integer.parseInt(args[0]);
-		}catch(NumberFormatException e){
-			System.out.println("Invalid Argument: Must be an Integer");
+			
+		}catch(Exception e){
+			System.out.println("Invalid Argument 1: Must be an Integer");
 			return;
 		}
 
+		try{
+			if(Integer.parseInt(args[1]) == 0){
+				EncryptionEngine.AES_BOX_PRESENT = false;
+				DecryptionEngine.AES_BOX_PRESENT = false;
+			}else{
+				EncryptionEngine.AES_BOX_PRESENT = true;
+				EncryptionEngine.AES_BOX_PRESENT = true;
+			}
+			
+		}catch(Exception e){
+			System.out.println("Invalid Argument 2: Must be an Integer");
+			return;
+		}
+		
 
 		if(mode == 0){
 			debug("Decryption Mode:");

@@ -30,7 +30,7 @@ import sun.security.pkcs11.wrapper.PKCS11Exception;
 public class EncryptionEngine implements Engine{
 
 	private static final boolean DEBUG = true;
-	private static final boolean AES_BOX_PRESENT = true;
+	public static boolean AES_BOX_PRESENT = true;
 	private Boolean authentication = null;
 	private Boolean confidentiality = null;
 	private Boolean timestamping = null;

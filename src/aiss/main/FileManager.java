@@ -35,7 +35,7 @@ import org.zeroturnaround.zip.ZipUtil;
 
 public class FileManager {
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final String INZIPFILENAME = "input.zip";
 	private static final String TMPFILENAME = "text.in";
 

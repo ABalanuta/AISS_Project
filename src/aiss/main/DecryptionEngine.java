@@ -20,7 +20,7 @@ import aiss.tss.client.TSSClient;
 public class DecryptionEngine implements Engine{
 
 	private static final boolean DEBUG = true;
-	private static final boolean AES_BOX_PRESENT = true;
+	public static boolean AES_BOX_PRESENT = true;
 
 	@Override
 	public void run() {
