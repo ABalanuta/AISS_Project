@@ -17,7 +17,7 @@ done
 # for the directory we're in and appending the target file.
 PHYS_DIR=`pwd -P`
 RESULT=$PHYS_DIR/$TARGET_FOLDER
-BOX=1  
+BOX=0
 
 java -jar "AESecure.jar" $1 $BOX> "log.txt"
 cat log.txt

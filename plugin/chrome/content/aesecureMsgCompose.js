@@ -56,20 +56,6 @@ var AESecure = {
         FileManager.Write(fileIN, texto);
 
         // Acrescentar extençoes
-       attachments = this.getSelectedAttachments();
-        for( i=0; i 
-        var attachment = attachments[i];
-
-        /* Create a file interface object */
-        var file = Components.classes["@mozilla.org/file/local;1"].
-        createInstance(Components.interfaces.nsILocalFile);
-        var fullfilepath = 'C:/test/' + attachment.displayName;
-        file.initWithPath(fullfilepath);
-        if(!file.exists()) {
-        file.create(0x00,0644);
-        }
-        messenger.saveAttachmentToFile( file, attachment.url, attachment.uri, attachment.contentType, null );
-        }
 
 
         //Inicializa os parametros do Executavel para envocar o Script
