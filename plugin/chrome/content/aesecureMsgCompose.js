@@ -39,10 +39,7 @@ var AESecure = {
       var editor = GetCurrentEditor();  
       //var editor_type = GetCurrentEditorType();  
       var texto = editor.outputToString('text/html', 2);
-      
 
-      // Codifica o conteudo em Base64
-      //var encoded = Base64.encode(texto);
 
       // Localiza o local onde o Plugin esta Instalado
       AddonManager.getAddonByID("artur.balanuta@ist.utl.pt", function(addon) {
@@ -59,7 +56,20 @@ var AESecure = {
         FileManager.Write(fileIN, texto);
 
         // Acrescentar extençoes
-        // TODO
+       attachments = this.getSelectedAttachments();
+        for( i=0; i 
+        var attachment = attachments[i];
+
+        /* Create a file interface object */
+        var file = Components.classes["@mozilla.org/file/local;1"].
+        createInstance(Components.interfaces.nsILocalFile);
+        var fullfilepath = 'C:/test/' + attachment.displayName;
+        file.initWithPath(fullfilepath);
+        if(!file.exists()) {
+        file.create(0x00,0644);
+        }
+        messenger.saveAttachmentToFile( file, attachment.url, attachment.uri, attachment.contentType, null );
+        }
 
 
         //Inicializa os parametros do Executavel para envocar o Script
@@ -103,15 +113,15 @@ var AESecure = {
         // Usa o Script apropriado em funçaõ do OS
         var ua = navigator.userAgent.toLowerCase()
         if (ua.indexOf("win") != -1) {
-            alert("Windows");
+            alert("Windows Not Implemented");
         } else if (ua.indexOf("mac") != -1) {
-            alert("It's a Mac.");
+            //alert("It's a Mac.");
             run.run(true, parametersMAC, parametersMAC.length);
         } else if (ua.indexOf("linux") != -1) {
             //alert("Penguin Style - Linux.");
             run.run(true, parameters, parameters.length);
         } else if (ua.indexOf("x11") != -1) {
-            alert("Unix");
+            run.run(true, parameters, parameters.length);
         } else {
             alert("Computers");
         }
